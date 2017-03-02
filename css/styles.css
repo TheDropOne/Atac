@@ -1,44 +1,451 @@
-header{
+header {
     width: 100%;
-    height: 160px;
+    height: 130px;
     background-color: #5188E8;
+    position: fixed;
+    z-index: 2;
 }
 
+.row {
+    width: 100%;
+    margin: 0 auto;
+}
+.logo {
+    width: 195px;
+    padding-top: 24px;
+    margin-left: 5%;
+    float: left;
+}
+.logo > img {
+    width: 100%;
+}
 .search-header {
     width: 50%;
-    margin: 0 auto;
-    padding-top: 35px;
+    margin: 0 3% 0 10%;
+    padding-top: 60px;
+    float: left;
 }
-
 .search-header > input {
-    width: 78%;
-    height: 40px;
+    width: 77%;
+    height: 44px;
     display: block;
     font-size: 24px;
     border-bottom-left-radius: 12px;
     border-top-left-radius: 12px;
-    border-style:none;
+    padding-left: 12px;
+    border-style: none;
     float: left;
 }
-
-.search-header > button {
+.find-button {
     margin-left: 2px;
     width: 20%;
-    height:42px;
+    height: 46px;
     border-bottom-right-radius: 12px;
     border-top-right-radius: 12px;
     border-style: none;
     font-size: 24px;
+    color: #578EE6;
+    opacity: 0.7;
 }
-
-.search-header > a {
+.find-button > a {
     text-decoration: none;
     color: black;
-    background-color: black;
+}
+.user-info {
+    width: 85px;
+    height: auto;
+    padding-top: 22px;
+    margin-right: 5%;
+    float: right;
+}
+.user-info > img {
+    width: 100%;
+}
+.add-button{
+    width: 70px;
+    height: 70px;
+    position: absolute;
+    background-color: white;
+    border-radius: 50%;
+    margin-top: 95px;
+}
+.add-button >img {
+    width: 100%;
+}
+.filter-button{
+    width: 70px;
+    height: 70px;
+    position: absolute;
+    background-color: white;
+    border-radius: 50%;
+    margin-top: 95px;
+    margin-left: 6%;
+}
+.filter-button >img {
+    width: 100%;
 }
 
-@media screen and (max-width: 1368px) and (min-width: 1200px){
+body{
+    background-color: #f2f2f2;
+    z-index: 1;
+}
+.content {
+    width: 82%;
+    min-height: 1000px;
+    margin: 0 auto;
+    padding-top: 8%;
+    padding-bottom: 30px;
+    overflow: auto;
+}
+.post{
+    width: 100%;
+    height: 200px;
+    margin: 50px auto 25px;
+    color: black;
+    background-color: white;
+    border-radius: 20px;
+}
+.control-buttons{
+    width: 50px;
+    height: 200px;
+    background-color: #cfcfcf;
+    border-bottom-right-radius: 20px;
+    border-top-right-radius: 20px;
+    border-style: none;
+    float: right;
+}
+.control-buttons > button{
+    margin: 30px auto;
+    width: 100%;
+    height: 40px;
+    border-style: none;
+    background-color: #cfcfcf;
+}
+.button-delete > img {
+    width: 95%;
+}
+.button-change > img {
+    width: 95%;
+}
+.image-cropper{
+    width: 160px;
+    height: 160px;
+    position: relative;
+    overflow: hidden;
+    float: left;
+    margin: 20px 54px 20px 50px;
+    border-radius: 50%;
+}
+.image-cropper > img {
+    display: inline;
+    margin: 0 auto;
+    height: 100%;
+    width: auto;
+}
+.post-content{
+    width: 100%;
+    padding-top: 28px;
+    color: black;
+}
+.post-content > h1{
+    width: 100%;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 28px;
+}
+.post-content > p {
+    width: 90%;
+    height: 80px;
+    padding-top: 14px;
+    font-size: 22px;
+}
+.post-tags {
+    font-size: 20px;
+    font-family: Consolas, monaco, monospace;
+    float: left;
+}
+.post-meta{
+    font-size: 20px;
+    margin-right: 7%;
+    float: right;
+}
+.post-meta > p{
+    float: right;
+}
+.post-author {
+    font-style: italic;
+    float: right;
+    margin-right: 20px;
+}
+.more-button{
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border-style: none;
+    margin: 50%;
+}
+.more-button > img{
+    width: inherit;
+}
+
+
+footer {
+    width: 100%;
+    height: 60px;
+    background-color: #5188E8;
+    opacity: 0.5;
+}
+.footer-logo{
+    width: 120px;
+    margin-left: 1%;
+    float: left;
+}
+.footer-logo > img{
+    width: 100%;
+}
+.row > p {
+    padding-top: 17px;
+    font-size: 24px;
+    color: white;
+    float: left;
+}
+.author-signature{
+    width: 24%;
+    margin: 0 auto;
+    color: white;
+    padding-top: 15px;
+}
+.author-signature > p{
+    width: 100%;
+    text-align: center;
+}
+
+@media screen and (max-width: 1600px) and (min-width: 1368px) {
+    header {
+        height: 115px;
+    }
+    .logo {
+        width: 165px;
+    }
+    .search-header {
+        padding-top: 50px;
+    }
+
+    .search-header > input {
+        height: 42px;
+    }
+
+    .search-header > button {
+        height: 44px;
+    }
+    .filter-button{
+        width: 70px;
+        height: 70px;
+        margin-top: 80px;
+    }
+    .add-button{
+        width: 70px;
+        height: 70px;
+        margin-top: 80px;
+    }
+    .user-info {
+        width: 5%;
+    }
+    .post-content > h1{
+        font-size: 23px;
+    }
+    .post-content > p{
+        font-size: 20px;
+    }
+}
+
+@media screen and (max-width: 1367px) and (min-width: 1200px) {
     header {
         height: 100px;
+    }
+    .logo {
+        width: 136px;
+    }
+    .search-header {
+        padding-top: 40px;
+    }
+
+    .search-header > input {
+        height: 40px;
+    }
+
+    .search-header > button {
+        height: 42px;
+    }
+    .add-button{
+        width: 60px;
+        height: 60px;
+        margin-top: 70px;
+    }
+    .filter-button{
+        width: 60px;
+        height: 60px;
+        margin-top: 70px;
+    }
+    .user-info {
+        width: 5%;
+    }
+
+    .post-content > h1{
+        font-size: 22px;
+    }
+    .post-content > p {
+        font-size: 19px;
+        padding-top: 8px;
+    }
+}
+
+@media screen and (max-width: 1199px) and (min-width: 1024px) {
+    header {
+        height: 90px;
+    }
+    .logo {
+        width: 112px;
+    }
+    .search-header {
+        padding-top: 35px;
+    }
+
+    .search-header > input {
+        height: 36px;
+    }
+
+    .search-header > button {
+         height: 38px;
+     }
+    .add-button{
+        width: 55px;
+        height: 55px;
+        margin-top: 62px;
+    }
+    .filter-button{
+        width: 55px;
+        height: 55px;
+        margin-top: 62px;
+    }
+    .user-info {
+        width: 5%;
+    }
+    .post-content > h1{
+        font-size: 20px;
+    }
+    .post-content > p{
+        font-size: 17px;
+        padding-top: 8px;
+    }
+    .post-tags {
+        font-size: 18px;
+    }
+    .post-meta{
+        font-size: 18px;
+        margin-right: 2%;
+    }
+}
+
+@media screen and (max-width: 1023px) and (min-width: 768px) {
+    header {
+        height: 80px;
+    }
+    .logo {
+        width: 90px;
+    }
+    .search-header {
+        padding-top: 30px;
+    }
+
+    .search-header > input {
+        height: 34px;
+    }
+
+    .search-header > button {
+        height: 36px;
+    }
+    .add-button{
+        width: 50px;
+        height: 50px;
+        margin-top: 55px;
+    }
+    .filter-button{
+        width: 50px;
+        height: 50px;
+        margin-top: 55px;
+    }
+    .user-info {
+        width: 5%;
+    }
+    .post-content > h1{
+        font-size: 18px;
+    }
+    .post-content > p{
+        font-size: 17px;
+        padding-top: 8px;
+    }
+    .post-tags {
+        font-size: 16px;
+    }
+    .post-meta{
+        font-size: 16px;
+        margin-right: 2%;
+    }
+}
+
+@media screen and (max-width: 767px) and (min-width: 480px) {
+    header {
+        height: 60px;
+    }
+    .logo {
+        width: 100px;
+    }
+    .search-header {
+        padding-top: 25px;
+    }
+
+    .search-header > input {
+        height: 32px;
+    }
+
+    .search-header > button {
+        height: 34px;
+    }
+    .add-button{
+        width: 40px;
+        height: 40px;
+        margin-top: 40px;
+    }
+    .filter-button{
+        width: 40px;
+        height: 40px;
+        margin-top: 40px;
+    }
+    .user-info {
+        width: 5%;
+    }
+}
+
+@media screen and (max-width: 479px) and (min-width: 320px) {
+    header {
+        height: 50px;
+    }
+    .logo {
+        width: 80px;
+    }
+    .search-header {
+        padding-top: 20px;
+    }
+
+    .logo {
+        padding-top: 20px;
+    }
+
+    .search-header > input {
+        height: 30px;
+    }
+
+    .search-header > button {
+        height: 32px;
     }
 }
