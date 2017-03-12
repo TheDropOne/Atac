@@ -1,5 +1,4 @@
-
-var user;
+var user = "Brama";
 
 var articleModel = (function () {
     var tags = ["MWC 2017", "Гаджеты", "Смартфоны", "Выставки", "Дизайн"];
@@ -290,6 +289,7 @@ var articleModel = (function () {
         console.log('Post with that id doesn\'t exist');
         return null;
     }
+
     function getArticles(skip, top, filterConfig) {
         var approvedArticles = [];
         if (filterConfig != null && filterConfig != undefined) {
@@ -307,6 +307,7 @@ var articleModel = (function () {
         });
         return approvedArticles.slice(skip, skip + top);
     }
+
     function getArticlesByFilter(filterConfig) {
         var filteredArray = [];
         for (var i = 0; i < articles.length; i++) {
@@ -335,6 +336,7 @@ var articleModel = (function () {
         }
         return filteredArray;
     }
+
     function validateArticle(article) {
         if (article == null || article === undefined) {
             console.log('Invalid article');
@@ -386,6 +388,7 @@ var articleModel = (function () {
         }
         return true;
     }
+
     function addArticle(article) {
         try {
             if (article == null || article == undefined) {
@@ -405,6 +408,7 @@ var articleModel = (function () {
             return false;
         }
     }
+
     function editArticle(id, article) {
         var tempPost = {
             id: "-1",
@@ -453,6 +457,7 @@ var articleModel = (function () {
         console.log("Post successfully edited");
         return true;
     }
+
     function removeArticle(id) {
         for (var i = 0; i < articles.length; i++) {
             if (articles[i] !== null && articles[i].id == id) {
@@ -464,6 +469,7 @@ var articleModel = (function () {
         console.log('Post with that id not exist');
         return false;
     }
+
     function addTag(tag) {
         if (tags.indexOf(tag) == -1) {
             tags.push(tag);
@@ -473,6 +479,7 @@ var articleModel = (function () {
         console.log("Tag not added");
         return false;
     }
+
     function removeTag(tag) {
         if (tags.indexOf(tag) != -1) {
             tags.splice(articles.indexOf(tag), 1);
@@ -484,13 +491,13 @@ var articleModel = (function () {
     }
 
     return {
-        getArticle:getArticle,
+        getArticle: getArticle,
         getArticles: getArticles,
         validateArticle: validateArticle,
         addArticle: addArticle,
         editArticle: editArticle,
-        removeArticle:removeArticle,
-        addTag:addTag,
+        removeArticle: removeArticle,
+        addTag: addTag,
         removeTag: removeTag,
     };
 }());
@@ -513,14 +520,29 @@ var postLoader = (function () {
         });
     }
 
+    function insertPostInDOM(article) {
+        POST_LIST_NODE.appendChild(loadPost(article));
+    }
+
     function removePostsFromDom() {
         POST_LIST_NODE.innerHTML = '';
     }
 
+    function removePostFromDom(id) {
+
+        // Holly fucking shit, 2 часа тыкался и все равно нихера не работает
+
+       /* var deleted = document.getElementById(id);
+        if (deleted == null) {
+            alert('null');
+            POST_LIST_NODE.removeChild(deleted);
+        }*/
+    }
 
     function editPostInDom() {
 
     }
+
     function loadPosts(articles) {
         return articles.map(function (article) {
             return loadPost(article);
@@ -535,15 +557,14 @@ var postLoader = (function () {
         temp.content.querySelector(".post-date").textContent = formatDate(article.createdAt);
         temp.content.querySelector(".post-author").textContent = article.author;
         temp.content.querySelector(".image-cropper").lastElementChild.src = article.imageSrc;
-        if(user == null){
-            var deleteButton = temp.content.querySelector(".control-buttons");
+        if (user == null) {
+            var controlButtons = temp.content.querySelector(".control-buttons");
             var userInfo = document.querySelector(".user-info").lastElementChild.src = "images/notuserlogo.png";
             var addPostButton = document.querySelector(".add-button");
-            if(deleteButton){
-                temp.content.querySelector(".post").removeChild(deleteButton);
+            if (controlButtons) {
+                temp.content.querySelector(".post").removeChild(controlButtons);
                 document.querySelector(".row").removeChild(addPostButton);
             }
-            //deleteButton.remove();
         }
 
         return temp.content.querySelector('.post').cloneNode(true);
@@ -553,14 +574,17 @@ var postLoader = (function () {
         return d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + ' ' +
             d.getUTCHours() + ':' + d.getMinutes();
     }
+
     return {
         init: init,
         insertPostsInDOM: insertPostsInDOM,
         removePostsFromDom: removePostsFromDom,
+        removePostFromDom: removePostFromDom,
+        insertPostInDOM: insertPostInDOM
     };
 }());
 
-document.addEventListener('DOMContentLoaded',startApp)
+document.addEventListener('DOMContentLoaded', startApp)
 
 function startApp() {
     postLoader.init();
@@ -571,4 +595,5 @@ function renderPosts(skip, top) {
     postLoader.removePostsFromDom();
     var posts = articleModel.getArticles(skip, top);
     postLoader.insertPostsInDOM(posts);
+    postLoader.removePostFromDom(5);
 }
