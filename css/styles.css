@@ -1,9 +1,9 @@
 header {
+    position: fixed;
+    z-index: 2;
     width: 100%;
     height: 130px;
     background-color: #5188E8;
-    position: fixed;
-    z-index: 2;
 }
 
 .row {
@@ -12,112 +12,112 @@ header {
 }
 .logo {
     width: 195px;
+    float: left;
     padding-top: 24px;
     margin-left: 5%;
-    float: left;
 }
 .logo > img {
     width: 100%;
 }
 .search-header {
     width: 50%;
+    float: left;
     margin: 0 3% 0 10%;
     padding-top: 60px;
-    float: left;
 }
 .search-header > input {
+    float: left;
+    display: block;
     width: 77%;
     height: 44px;
-    display: block;
     font-size: 24px;
+    border-style: none;
+    padding-left: 12px;
     border-bottom-left-radius: 12px;
     border-top-left-radius: 12px;
-    padding-left: 12px;
-    border-style: none;
-    float: left;
 }
 .find-button {
-    margin-left: 2px;
     width: 20%;
     height: 46px;
+    margin-left: 2px;
+    font-size: 24px;
+    border-style: none;
     border-bottom-right-radius: 12px;
     border-top-right-radius: 12px;
-    border-style: none;
-    font-size: 24px;
-    color: #578EE6;
     opacity: 0.7;
+    color: #578EE6;
 }
 .find-button > a {
     text-decoration: none;
-    color: black;
+    color: #000000;
 }
 .user-info {
+    float: right;
     width: 85px;
     height: auto;
     padding-top: 22px;
     margin-right: 5%;
-    float: right;
 }
 .user-info > img {
     width: 100%;
 }
 .add-button{
+    position: absolute;
     width: 70px;
     height: 70px;
-    position: absolute;
-    background-color: white;
     border-radius: 50%;
     margin-top: 95px;
+    background-color: #FFFFFF;
 }
 .add-button >img {
     width: 100%;
 }
 .filter-button{
+    position: absolute;
     width: 70px;
     height: 70px;
-    position: absolute;
-    background-color: white;
     border-radius: 50%;
     margin-top: 95px;
     margin-left: 6%;
+    background-color: #FFFFFF;
 }
 .filter-button >img {
     width: 100%;
 }
 
 body{
-    background-color: #f2f2f2;
     z-index: 1;
+    background-color: #f2f2f2;
 }
 .content {
+    overflow: auto;
     width: 82%;
     min-height: 1000px;
-    margin: 0 auto;
     padding-top: 8%;
     padding-bottom: 30px;
-    overflow: auto;
+    margin: 0 auto;
 }
 .post{
-    width: 100%;
-    height: 200px;
-    margin: 50px auto 25px;
-    color: black;
-    background-color: white;
-    border-radius: 20px;
-}
+     width: 100%;
+     height: 200px;
+     margin: 50px auto 25px;
+     border-radius: 20px;
+     color: #000000;
+     background-color: #FFFFFF;
+ }
 .control-buttons{
+    float: right;
     width: 50px;
     height: 200px;
-    background-color: #cfcfcf;
     border-bottom-right-radius: 20px;
     border-top-right-radius: 20px;
     border-style: none;
-    float: right;
+    background-color: #cfcfcf;
 }
 .control-buttons > button{
-    margin: 30px auto;
     width: 100%;
     height: 40px;
+    margin: 30px auto;
     border-style: none;
     background-color: #cfcfcf;
 }
@@ -128,24 +128,24 @@ body{
     width: 95%;
 }
 .image-cropper{
-    width: 160px;
-    height: 160px;
     position: relative;
     overflow: hidden;
     float: left;
+    width: 160px;
+    height: 160px;
     margin: 20px 54px 20px 50px;
     border-radius: 50%;
 }
 .image-cropper > img {
     display: inline;
-    margin: 0 auto;
     height: 100%;
     width: auto;
+    margin: 0 auto;
 }
 .post-content{
     width: 100%;
     padding-top: 28px;
-    color: black;
+    color: #000000;
 }
 .post-content > h1{
     width: 100%;
@@ -155,33 +155,35 @@ body{
 .post-content > p {
     width: 90%;
     height: 80px;
-    padding-top: 14px;
     font-size: 22px;
+    padding-top: 14px;
 }
 .post-tags {
+    float: left;
     font-size: 20px;
     font-family: Consolas, monaco, monospace;
-    float: left;
 }
 .post-meta{
+    float: right;
     font-size: 20px;
     margin-right: 7%;
-    float: right;
 }
 .post-meta > p{
     float: right;
 }
 .post-author {
-    font-style: italic;
     float: right;
+    font-style: italic;
     margin-right: 20px;
 }
 .more-button{
+    position: relative;
     width: 60px;
     height: 60px;
     border-radius: 50%;
     border-style: none;
     margin: 50%;
+    bottom: 10px;
 }
 .more-button > img{
     width: inherit;
@@ -191,28 +193,28 @@ body{
 footer {
     width: 100%;
     height: 60px;
-    background-color: #5188E8;
     opacity: 0.5;
+    background-color: #5188E8;
 }
 .footer-logo{
+    float: left;
     width: 120px;
     margin-left: 1%;
-    float: left;
 }
 .footer-logo > img{
     width: 100%;
 }
 .row > p {
+    float: left;
     padding-top: 17px;
     font-size: 24px;
-    color: white;
-    float: left;
+    color: #FFFFFF;
 }
 .author-signature{
     width: 24%;
-    margin: 0 auto;
-    color: white;
     padding-top: 15px;
+    margin: 0 auto;
+    color: #FFFFFF;
 }
 .author-signature > p{
     width: 100%;
