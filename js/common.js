@@ -289,7 +289,6 @@ var articleModel = (function () {
         console.log('Post with that id doesn\'t exist');
         return null;
     }
-
     function getArticles(skip, top, filterConfig) {
         var approvedArticles = [];
         if (filterConfig != null && filterConfig != undefined) {
@@ -307,7 +306,6 @@ var articleModel = (function () {
         });
         return approvedArticles.slice(skip, skip + top);
     }
-
     function getArticlesByFilter(filterConfig) {
         var filteredArray = [];
         for (var i = 0; i < articles.length; i++) {
@@ -336,7 +334,6 @@ var articleModel = (function () {
         }
         return filteredArray;
     }
-
     function validateArticle(article) {
         if (article == null || article === undefined) {
             console.log('Invalid article');
@@ -375,9 +372,11 @@ var articleModel = (function () {
             return false;
         }
         for (var i = 0; i < articles.length; i++) {
-            if (articles[i].id === article.id) {
-                console.log('Invalid id');
-                return false;
+            if (articles[i] != null) {
+                if (articles[i].id === article.id) {
+                    console.log('Invalid id');
+                    return false;
+                }
             }
         }
         for (var i = 0; i < article.tags.length; i++) {
@@ -388,7 +387,6 @@ var articleModel = (function () {
         }
         return true;
     }
-
     function addArticle(article) {
         try {
             if (article == null || article == undefined) {
@@ -410,6 +408,7 @@ var articleModel = (function () {
     }
 
     function editArticle(id, article) {
+        var index = 0;
         var tempPost = {
             id: "-1",
             title: "-1",
@@ -420,9 +419,14 @@ var articleModel = (function () {
             imageSrc: "-1",
             tags: []
         };
+        if (id == null || id === undefined) {
+            console.log("ID is null or undefined");
+            return false;
+        }
         for (var i = 0; i < articles.length; i++) {
             if (articles[i].id != null && articles[i].id != undefined && articles[i].id == id) {
                 tempPost = clone(articles[i]);
+                index = i;
                 break;
             }
         }
@@ -449,15 +453,16 @@ var articleModel = (function () {
         if (article.tags != null && article.tags != undefined) {
             tempPost.tags = article.tags;
         }
+        articles[index] = null;
         if (!validateArticle(tempPost)) {
             console.log("Post not validated");
+            articles[index] = tempPost;
             return false;
         }
-        articles.replace(post, tempPost);
+        articles[index] = tempPost;
         console.log("Post successfully edited");
         return true;
     }
-
     function removeArticle(id) {
         for (var i = 0; i < articles.length; i++) {
             if (articles[i] !== null && articles[i].id == id) {
@@ -469,7 +474,6 @@ var articleModel = (function () {
         console.log('Post with that id not exist');
         return false;
     }
-
     function addTag(tag) {
         if (tags.indexOf(tag) == -1) {
             tags.push(tag);
@@ -489,7 +493,11 @@ var articleModel = (function () {
         console.log("Tag not removed");
         return false;
     }
-
+    function logArray(array) {
+        for (var i = 0; i < array.length; i++) {
+            console.log(array[i]);
+        }
+    }
     return {
         getArticle: getArticle,
         getArticles: getArticles,
@@ -499,6 +507,7 @@ var articleModel = (function () {
         removeArticle: removeArticle,
         addTag: addTag,
         removeTag: removeTag,
+        logArray:logArray
     };
 }());
 
@@ -521,6 +530,7 @@ var postLoader = (function () {
     }
 
     function insertPostInDOM(article) {
+        articleModel.addArticle(article);
         POST_LIST_NODE.appendChild(loadPost(article));
     }
 
@@ -529,18 +539,14 @@ var postLoader = (function () {
     }
 
     function removePostFromDom(id) {
-
+        articleModel.removeArticle(id);
+        renderPosts(0,25);
         // Holly fucking shit, 2 часа тыкался и все равно нихера не работает
-
-       /* var deleted = document.getElementById(id);
-        if (deleted == null) {
-            alert('null');
-            POST_LIST_NODE.removeChild(deleted);
-        }*/
     }
 
-    function editPostInDom() {
-
+    function editPostInDom(id,article) {
+        articleModel.editArticle(id,article);
+        renderPosts(0,25);
     }
 
     function loadPosts(articles) {
@@ -557,6 +563,9 @@ var postLoader = (function () {
         temp.content.querySelector(".post-date").textContent = formatDate(article.createdAt);
         temp.content.querySelector(".post-author").textContent = article.author;
         temp.content.querySelector(".image-cropper").lastElementChild.src = article.imageSrc;
+        //for(var i = 0; i < article.tags.size; i++){
+            temp.content.querySelector(".post-tags").innerHTML = article.tags;
+        //}
         if (user == null) {
             var controlButtons = temp.content.querySelector(".control-buttons");
             var userInfo = document.querySelector(".user-info").lastElementChild.src = "images/notuserlogo.png";
@@ -566,7 +575,6 @@ var postLoader = (function () {
                 document.querySelector(".row").removeChild(addPostButton);
             }
         }
-
         return temp.content.querySelector('.post').cloneNode(true);
     }
 
@@ -580,7 +588,8 @@ var postLoader = (function () {
         insertPostsInDOM: insertPostsInDOM,
         removePostsFromDom: removePostsFromDom,
         removePostFromDom: removePostFromDom,
-        insertPostInDOM: insertPostInDOM
+        insertPostInDOM: insertPostInDOM,
+        editPostInDom:editPostInDom
     };
 }());
 
@@ -588,12 +597,46 @@ document.addEventListener('DOMContentLoaded', startApp)
 
 function startApp() {
     postLoader.init();
-    renderPosts();
+    //1
+    renderPosts(0,25);
+    //2
+    postLoader.insertPostInDOM({
+        id: "21",
+        title: "Новый добавленный пост",
+        summary: "На выставке MWC 2017 в Барселоне компания HMD Global, которая  на выпуск смартфонов  Nokia, представила новые Android-смартфоны разных ценовыхкатегорий — Nokia 3, Nokia 5 и Nokia 6.",
+        createdAt: new Date('2017-02-26T20:31:00'),
+        author: "Brama",
+        content: "Nokia 3 — самый бюджетный аппарат из всей линейки, он стоит от 147 долларов США.Смартфон получил металлический корпус с задней панелью из поликарбоната, 5,2-дюймовый экран с разрешением 1280 на 720 пикселей, процессор MTK 6737, 2 ГБ оперативной и 16 ГБ встроенной памяти, а также фронтальную и основную камеры на 8 Мп. Емкость батареи — 2650 мАч.",
+        imageSrc: "images/10.jpg",
+        tags: ["MWC 2017",
+            "Гаджеты",
+            "Смартфоны",
+            "Выставки",
+            "Дизайн"]
+    });
+    //3
+    postLoader.removePostFromDom(20);
+    //4
+    postLoader.editPostInDom(21,{
+        title: "Легенда уже вернулась, алло, это сайт ATAC",
+        imageSrc: "images/legend.png",
+        summary:"Лучший новостной сайт у вас перед глазами!"
+    });
+    //5
+    //Сделана проверка в функции loadPost, ибо нет смысла изначально создавать эти элементы, чтобы потом удалить.
+    //6
+    //Нет смысла заполнять опции фильтра, так как он отображается только по нажатию на кнопку.
+
+    //Пользователь
+    user = "Brama inc."
+    renderPosts(0,25);
+    //Нет пользователя
+    user = null;
+    renderPosts(0,25);
 }
 
 function renderPosts(skip, top) {
     postLoader.removePostsFromDom();
     var posts = articleModel.getArticles(skip, top);
     postLoader.insertPostsInDOM(posts);
-    postLoader.removePostFromDom(5);
 }
