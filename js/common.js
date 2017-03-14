@@ -280,7 +280,7 @@ var articleModel = (function () {
     function getArticle(id) {
         if (articles.length != 0) {
             for (var i = 0; i < articles.length; i++) {
-                if (articles[i].id != null && articles[i].id != undefined && articles[i].id == id) {
+                if (articles[i].id && (articles[i].id == id)) {
                     console.log('Post returned');
                     return articles[i];
                 }
@@ -291,13 +291,13 @@ var articleModel = (function () {
     }
     function getArticles(skip, top, filterConfig) {
         var approvedArticles = [];
-        if (filterConfig != null && filterConfig != undefined) {
+        if (filterConfig) {
             approvedArticles = getArticlesByFilter(filterConfig);
         } else {
             approvedArticles = articles;
         }
-        skip = typeof skip !== 'undefined' ? skip : 0;
-        top = typeof top !== 'undefined' ? top : 10;
+        skip = skip  || 0;
+        top = top || 10;
         if (articles.length < top) {
             top = articles.length;
         }
@@ -309,22 +309,22 @@ var articleModel = (function () {
     function getArticlesByFilter(filterConfig) {
         var filteredArray = [];
         for (var i = 0; i < articles.length; i++) {
-            if (filterConfig.byName() != null) {
+            if (filterConfig.byName()) {
                 if (articles[i].title.indexOf(filterConfig.byName()) != -1) {
                     filteredArray.push(articles[i]);
                 }
             }
-            if (filterConfig.byDate() != null) {
+            if (filterConfig.byDate()) {
                 if (articles[i].createdAt - filterConfig.byDate() < 100000) {
                     filteredArray.push(articles[i]);
                 }
             }
-            if (filterConfig.byAuthor() != null) {
+            if (filterConfig.byAuthor()) {
                 if (articles[i].author === filterConfig.byAuthor()) {
                     filteredArray.push(articles[i]);
                 }
             }
-            if (filterConfig.byTags() != null) {
+            if (filterConfig.byTags()) {
                 for (var j = 0; j < filterConfig.byTags().length; j++) {
                     if (articles[i].tags.indexOf(filterConfig.byTags()[j]) != -1) {
                         filteredArray.push(articles[i]);
@@ -389,7 +389,7 @@ var articleModel = (function () {
     }
     function addArticle(article) {
         try {
-            if (article == null || article == undefined) {
+            if (!article) {
                 console.log('Article not added. It is null or undefined');
                 return false;
             }
@@ -419,38 +419,38 @@ var articleModel = (function () {
             imageSrc: "-1",
             tags: []
         };
-        if (id == null || id === undefined) {
+        if (!id) {
             console.log("ID is null or undefined");
             return false;
         }
         for (var i = 0; i < articles.length; i++) {
-            if (articles[i].id != null && articles[i].id != undefined && articles[i].id == id) {
+            if (articles[i].id  && (articles[i].id == id)) {
                 tempPost = clone(articles[i]);
                 index = i;
                 break;
             }
         }
-        if (article == null || article === undefined) {
+        if (!article) {
             console.log("Article is null or undefined");
             return false;
         }
-        if (tempPost === undefined) {
+        if (!tempPost) {
             console.log("Post with that id doesn't exist");
             return false;
         }
-        if (article.title != null && article.title != undefined) {
+        if (article.title) {
             tempPost.title = article.title;
         }
-        if (article.summary != null && article.summary != undefined) {
+        if (article.summary) {
             tempPost.summary = article.summary;
         }
-        if (article.content != null && article.content != undefined) {
+        if (article.content) {
             tempPost.content = article.content;
         }
-        if (article.imageSrc != null && article.imageSrc != undefined) {
+        if (article.imageSrc) {
             tempPost.imageSrc = article.imageSrc;
         }
-        if (article.tags != null && article.tags != undefined) {
+        if (article.tags) {
             tempPost.tags = article.tags;
         }
         articles[index] = null;
