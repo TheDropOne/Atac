@@ -31,7 +31,79 @@
     </div>
 </header>
 <div class="content">
-    <script src="js/common.js" type="text/javascript"></script>
+
+    <div class="detailed-post" data-id="id">
+        <div class="detailed-image-cropper">
+            <img src="images/1.jpg" alt="Post logo">
+        </div>
+        <div class="detailed-control-buttons">
+            <button class="detailed-button-delete"><img src="images/cross.png" alt="X"/><a href="#"></a></button>
+            <button class="detailed-button-change"><img src="images/pencil.png" alt="edit"/><a href="#"></a></button>
+        </div>
+        <div class="detailed-post-content">
+            <h1 class="detailed-post-title">Заголовок</h1>
+            <p class="detailed-post-short-description">Краткое описание для статьи будет здесь. </p>
+        </div>
+        <div class="detailed-post-tags">
+            <i>#тег1</i>
+            <i>#тег2</i>
+            <i>#тег3</i>
+        </div>
+        <div class="detailed-post-meta">
+            <p class="detailed-post-date">А тут дата</p>
+            <p class="detailed-post-author">Тут автор</p>
+        </div>
+    </div>
+
+
+    <div class="login-window">
+        <div class="login-window-header">
+            <h1 class="login-window-title">Авторизация</h1>
+        </div>
+        <div class="login-window-input">
+            <input class="login-input" type="text" placeholder="Логин">
+            <input class="pass-input" type="password" placeholder="Пароль">
+        </div>
+        <button class="login-window-enter-button" title="Уже вхожу"><a href="#">Войти</a></button>
+    </div>
+
+    <!--<script src="js/common.js" type="text/javascript"></script>-->
+    <div class="error-window">
+        <div class="error-window-header">
+            <h1 class="error-window-title">Ошибка!</h1>
+        </div>
+        <div class="error-window-content">
+            <p class="error-window-label">Возникла ошибка, пожалуйста, перезагрузите страницу</p>
+            <p class="error-window-code">Код ошибки : 500</p>
+            <button class="error-window-return-button"  title="Уже ухожу"><a href="#">На главную</a></button>
+        </div>
+    </div>
+
+
+    <div class="post" data-id="id">
+        <div class="image-cropper">
+            <img src="images/1.jpg" alt="Post logo">
+        </div>
+        <div class="control-buttons">
+            <button class="button-delete"><img src="images/cross.png" alt="X"/><a href="#"></a></button>
+            <button class="button-change"><img src="images/pencil.png" alt="edit"/><a href="#"></a></button>
+        </div>
+        <div class="post-content">
+            <h1 class="post-title">Заголовок</h1>
+            <p class="post-short-description">Краткое описание для статьи будет здесь.</p>
+        </div>
+        <div class="post-tags">
+            <i>#тег1</i>
+            <i>#тег2</i>
+            <i>#тег3</i>
+        </div>
+        <div class="post-meta">
+            <p class="post-date">А тут дата</p>
+            <p class="post-author">Тут автор</p>
+        </div>
+    </div>
+
+
 </div>
 <div>
     <a class="more-button" href="#" title="Ещё"><img src="images/down-button-icon.png"/></a>
@@ -74,5 +146,84 @@
     </div>
 </template>
 
+<template id="template-detailed-post-item">
+    <div class="detailed-post" data-id="id">
+        <div class="detailed-image-cropper">
+            <img src="images/1.jpg" alt="Post logo">
+        </div>
+        <div class="detailed-control-buttons">
+            <button class="detailed-button-delete"><img src="images/cross.png" alt="X"/><a href="#"></a></button>
+            <button class="detailed-button-change"><img src="images/pencil.png" alt="edit"/><a href="#"></a></button>
+        </div>
+        <div class="detailed-post-content">
+            <h1 class="detailed-post-title">Заголовок</h1>
+            <p class="detailed-post-short-description">Краткое описание для статьи будет здесь.</p>
+        </div>
+        <div class="detailed-post-tags">
+            <i>#тег1</i>
+            <i>#тег2</i>
+            <i>#тег3</i>
+        </div>
+        <div class="detailed-post-meta">
+            <p class="detailed-post-date">А тут дата</p>
+            <p class="detailed-post-author">Тут автор</p>
+        </div>
+    </div>
+</template>
+
+<template id="error-window-template">
+    <div class="error-window">
+        <div class="error-window-header">
+            <h1 class="error-window-title">Ошибка!</h1>
+        </div>
+        <div class="error-window-content">
+            <p class="error-window-label">Возникла ошибка, пожалуйста, перезагрузите страницу</p>
+            <p class="error-window-code">Код ошибки : </p>
+            <button class="error-window-return-button" title="Уже ухожу"><a href="#">На главную</a></button>
+        </div>
+    </div>
+</template>
+
+<template id="login-window-template">
+    <div class="login-window">
+        <div class="login-window-header">
+            <h1 class="login-window-title">Ошибка!</h1>
+        </div>
+        <div class="login-window-content">
+            <input type="text" placeholder="Логин">
+            <input type="password" placeholder="Пароль">
+            <button class="login-window-enter-button" title="Уже вхожу"><a href="#">Войти</a></button>
+        </div>
+    </div>
+</template>
+
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

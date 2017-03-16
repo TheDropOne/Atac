@@ -289,6 +289,7 @@ var articleModel = (function () {
         console.log('Post with that id doesn\'t exist');
         return null;
     }
+
     function getArticles(skip, top, filterConfig) {
         var approvedArticles = [];
         if (filterConfig != null && filterConfig != undefined) {
@@ -296,8 +297,8 @@ var articleModel = (function () {
         } else {
             approvedArticles = articles;
         }
-        skip = typeof skip !== 'undefined' ? skip : 0;
-        top = typeof top !== 'undefined' ? top : 10;
+        skip = skip || 0;
+        top = top || 0;
         if (articles.length < top) {
             top = articles.length;
         }
@@ -306,6 +307,7 @@ var articleModel = (function () {
         });
         return approvedArticles.slice(skip, skip + top);
     }
+
     function getArticlesByFilter(filterConfig) {
         var filteredArray = [];
         for (var i = 0; i < articles.length; i++) {
@@ -334,6 +336,7 @@ var articleModel = (function () {
         }
         return filteredArray;
     }
+
     function validateArticle(article) {
         if (article == null || article === undefined) {
             console.log('Invalid article');
@@ -387,6 +390,7 @@ var articleModel = (function () {
         }
         return true;
     }
+
     function addArticle(article) {
         try {
             if (article == null || article == undefined) {
@@ -463,6 +467,7 @@ var articleModel = (function () {
         console.log("Post successfully edited");
         return true;
     }
+
     function removeArticle(id) {
         for (var i = 0; i < articles.length; i++) {
             if (articles[i] !== null && articles[i].id == id) {
@@ -474,6 +479,7 @@ var articleModel = (function () {
         console.log('Post with that id not exist');
         return false;
     }
+
     function addTag(tag) {
         if (tags.indexOf(tag) == -1) {
             tags.push(tag);
@@ -493,11 +499,13 @@ var articleModel = (function () {
         console.log("Tag not removed");
         return false;
     }
+
     function logArray(array) {
         for (var i = 0; i < array.length; i++) {
             console.log(array[i]);
         }
     }
+
     return {
         getArticle: getArticle,
         getArticles: getArticles,
@@ -507,7 +515,7 @@ var articleModel = (function () {
         removeArticle: removeArticle,
         addTag: addTag,
         removeTag: removeTag,
-        logArray:logArray
+        logArray: logArray
     };
 }());
 
@@ -540,13 +548,13 @@ var postLoader = (function () {
 
     function removePostFromDom(id) {
         articleModel.removeArticle(id);
-        renderPosts(0,25);
+        renderPosts(0, 25);
         // Holly fucking shit, 2 часа тыкался и все равно нихера не работает
     }
 
-    function editPostInDom(id,article) {
-        articleModel.editArticle(id,article);
-        renderPosts(0,25);
+    function editPostInDom(id, article) {
+        articleModel.editArticle(id, article);
+        renderPosts(0, 25);
     }
 
     function loadPosts(articles) {
@@ -563,9 +571,8 @@ var postLoader = (function () {
         temp.content.querySelector(".post-date").textContent = formatDate(article.createdAt);
         temp.content.querySelector(".post-author").textContent = article.author;
         temp.content.querySelector(".image-cropper").lastElementChild.src = article.imageSrc;
-        //for(var i = 0; i < article.tags.size; i++){
-            temp.content.querySelector(".post-tags").innerHTML = article.tags;
-        //}
+        temp.content.querySelector(".post-tags").innerHTML = article.tags;
+       
         if (user == null) {
             var controlButtons = temp.content.querySelector(".control-buttons");
             var userInfo = document.querySelector(".user-info").lastElementChild.src = "images/notuserlogo.png";
@@ -589,7 +596,7 @@ var postLoader = (function () {
         removePostsFromDom: removePostsFromDom,
         removePostFromDom: removePostFromDom,
         insertPostInDOM: insertPostInDOM,
-        editPostInDom:editPostInDom
+        editPostInDom: editPostInDom
     };
 }());
 
@@ -598,7 +605,7 @@ document.addEventListener('DOMContentLoaded', startApp)
 function startApp() {
     postLoader.init();
     //1
-    renderPosts(0,25);
+    //renderPosts(0, 25);
     //2
     postLoader.insertPostInDOM({
         id: "21",
@@ -617,10 +624,10 @@ function startApp() {
     //3
     postLoader.removePostFromDom(20);
     //4
-    postLoader.editPostInDom(21,{
+    postLoader.editPostInDom(21, {
         title: "Легенда уже вернулась, алло, это сайт ATAC",
         imageSrc: "images/legend.png",
-        summary:"Лучший новостной сайт у вас перед глазами!"
+        summary: "Лучший новостной сайт у вас перед глазами!"
     });
     //5
     //Сделана проверка в функции loadPost, ибо нет смысла изначально создавать эти элементы, чтобы потом удалить.
@@ -629,10 +636,10 @@ function startApp() {
 
     //Пользователь
     user = "Brama inc."
-    renderPosts(0,25);
+    renderPosts(0, 25);
     //Нет пользователя
     user = null;
-    renderPosts(0,25);
+    renderPosts(0, 25);
 }
 
 function renderPosts(skip, top) {

@@ -92,7 +92,7 @@ body{
 .content {
     overflow: auto;
     width: 82%;
-    min-height: 1000px;
+    min-height: 600px;
     padding-top: 8%;
     padding-bottom: 30px;
     margin: 0 auto;
@@ -187,6 +187,193 @@ body{
 }
 .more-button > img{
     width: inherit;
+}
+
+.error-window {
+    width: 90%;
+    height: 400px;
+    text-align: center;
+    margin: 100px auto 25px;
+    border-radius: 12px;
+    background-color: #FFFFFF;
+}
+.error-window-header{
+    width: 100%;
+    height: 32%;
+    background-color: #ff8675;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+}
+.error-window-title {
+    width: 100%;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 44px;
+    color: #FFFFFF;
+    padding-top: 50px;
+}
+.error-window-content{
+    width: 100%;
+}
+.error-window-label{
+    width: 100%;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 28px;
+    color: #424242;
+    padding-top: 45px;
+}
+.error-window-code{
+    width: 100%;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 26px;
+    color: #848484;
+    padding-top: 25px;
+}
+.error-window-return-button {
+    width: 25%;
+    height: 46px;
+    align-content: center;
+    margin-top: 40px;
+    font-size: 24px;
+    border-style: none;
+    border-radius: 10px;
+    color: #FFFFFF;
+    background-color: #81e600;
+}
+.error-window-return-button > a{
+    color: #FFFFFF;
+    text-decoration: none;
+}
+
+.login-window {
+    width: 95%;
+    height: 540px;
+    text-align: center;
+    margin: 100px auto 25px;
+    border-radius: 16px;
+    background-color: #FFFFFF;
+}
+.login-window-header{
+    width: 100%;
+    height: 25%;
+    background-color: #5188E8;
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+}
+.login-window-title {
+    width: 100%;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 40px;
+    color: #FFFFFF;
+    padding-top: 48px;
+}
+.login-window-input{
+    margin-top: 40px;
+}
+.login-window-input>input{
+    width: 40%;
+    height: 60px;
+    font-size: 28px;
+    margin-top: 30px;
+    margin-left: 20%;
+    margin-right: 20%;
+    text-align: center;
+    border-style: none;
+    border-radius: 8px;
+    background-color: #f0f0f8;
+}
+.login-window-enter-button {
+    width: 20%;
+    height: 50px;
+    align-content: center;
+    margin-top: 40px;
+    font-size: 24px;
+    border-style: none;
+    border-radius: 10px;
+    background-color: #81e600;
+}
+.login-window-enter-button > a{
+    color: #FFFFFF;
+    text-decoration: none;
+}
+
+.detailed-post{
+    width: 90%;
+    height: 800px;
+    margin: 50px auto 25px;
+    border-radius: 20px;
+    background-color: #FFFFFF;
+}
+.detailed-control-buttons{
+    float: right;
+    width: 50px;
+    height: 800px;
+    border-bottom-right-radius: 20px;
+    border-top-right-radius: 20px;
+    border-style: none;
+    background-color: #cfcfcf;
+}
+.detailed-control-buttons > button{
+    width: 100%;
+    height: 40px;
+    margin: 170px auto;
+    border-style: none;
+    background-color: #cfcfcf;
+}
+.detailed-button-delete > img {
+    width: 95%;
+}
+.detailed-button-change > img {
+    width: 95%;
+}
+.detailed-image-cropper{
+    position: relative;
+    overflow: hidden;
+    float: left;
+    width: 220px;
+    height: 220px;
+    margin: 20px 54px 20px 50px;
+    border-radius: 50%;
+}
+.detailed-image-cropper > img {
+    display: inline;
+    height: 100%;
+    width: auto;
+    margin: 0 auto;
+}
+.detailed-post-content{
+    width: 100%;
+    padding-top: 38px;
+    color: #000000;
+}
+.detailed-post-content > h1{
+    width: 100%;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 36px;
+}
+.detailed-post-content > p {
+    width: 90%;
+    font-size: 26px;
+    padding: 20px 50px 40px;
+}
+.detailed-post-tags {
+    float: left;
+    font-size: 20px;
+    font-family: Consolas, monaco, monospace;
+    padding-left: 50px;
+    padding-right: 20px;
+}
+.detailed-post-meta{
+    float: right;
+    font-size: 26px;
+    margin-right: 7%;
+}
+.detailed-post-meta > p{
+    float: right;
+}
+.detailed-post-author {
+    float: right;
+    font-style: italic;
+    margin-right: 20px;
 }
 
 
