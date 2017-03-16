@@ -280,7 +280,7 @@ var articleModel = (function () {
     function getArticle(id) {
         if (articles.length != 0) {
             for (var i = 0; i < articles.length; i++) {
-                if (articles[i].id != null && articles[i].id != undefined && articles[i].id == id) {
+                if (articles[i].id && (articles[i].id == id)) {
                     console.log('Post returned');
                     return articles[i];
                 }
@@ -289,16 +289,15 @@ var articleModel = (function () {
         console.log('Post with that id doesn\'t exist');
         return null;
     }
-
     function getArticles(skip, top, filterConfig) {
         var approvedArticles = [];
-        if (filterConfig != null && filterConfig != undefined) {
+        if (filterConfig) {
             approvedArticles = getArticlesByFilter(filterConfig);
         } else {
             approvedArticles = articles;
         }
         skip = skip || 0;
-        top = top || 0;
+        top = top || 10;
         if (articles.length < top) {
             top = articles.length;
         }
@@ -307,26 +306,25 @@ var articleModel = (function () {
         });
         return approvedArticles.slice(skip, skip + top);
     }
-
     function getArticlesByFilter(filterConfig) {
         var filteredArray = [];
         for (var i = 0; i < articles.length; i++) {
-            if (filterConfig.byName() != null) {
+            if (filterConfig.byName()) {
                 if (articles[i].title.indexOf(filterConfig.byName()) != -1) {
                     filteredArray.push(articles[i]);
                 }
             }
-            if (filterConfig.byDate() != null) {
+            if (filterConfig.byDate()) {
                 if (articles[i].createdAt - filterConfig.byDate() < 100000) {
                     filteredArray.push(articles[i]);
                 }
             }
-            if (filterConfig.byAuthor() != null) {
+            if (filterConfig.byAuthor()) {
                 if (articles[i].author === filterConfig.byAuthor()) {
                     filteredArray.push(articles[i]);
                 }
             }
-            if (filterConfig.byTags() != null) {
+            if (filterConfig.byTags()) {
                 for (var j = 0; j < filterConfig.byTags().length; j++) {
                     if (articles[i].tags.indexOf(filterConfig.byTags()[j]) != -1) {
                         filteredArray.push(articles[i]);
@@ -336,7 +334,6 @@ var articleModel = (function () {
         }
         return filteredArray;
     }
-
     function validateArticle(article) {
         if (article == null || article === undefined) {
             console.log('Invalid article');
@@ -390,10 +387,9 @@ var articleModel = (function () {
         }
         return true;
     }
-
     function addArticle(article) {
         try {
-            if (article == null || article == undefined) {
+            if (!article) {
                 console.log('Article not added. It is null or undefined');
                 return false;
             }
@@ -423,38 +419,38 @@ var articleModel = (function () {
             imageSrc: "-1",
             tags: []
         };
-        if (id == null || id === undefined) {
+        if (!id) {
             console.log("ID is null or undefined");
             return false;
         }
         for (var i = 0; i < articles.length; i++) {
-            if (articles[i].id != null && articles[i].id != undefined && articles[i].id == id) {
+            if (articles[i].id  && (articles[i].id == id)) {
                 tempPost = clone(articles[i]);
                 index = i;
                 break;
             }
         }
-        if (article == null || article === undefined) {
+        if (!article) {
             console.log("Article is null or undefined");
             return false;
         }
-        if (tempPost === undefined) {
+        if (!tempPost) {
             console.log("Post with that id doesn't exist");
             return false;
         }
-        if (article.title != null && article.title != undefined) {
+        if (article.title) {
             tempPost.title = article.title;
         }
-        if (article.summary != null && article.summary != undefined) {
+        if (article.summary) {
             tempPost.summary = article.summary;
         }
-        if (article.content != null && article.content != undefined) {
+        if (article.content) {
             tempPost.content = article.content;
         }
-        if (article.imageSrc != null && article.imageSrc != undefined) {
+        if (article.imageSrc) {
             tempPost.imageSrc = article.imageSrc;
         }
-        if (article.tags != null && article.tags != undefined) {
+        if (article.tags) {
             tempPost.tags = article.tags;
         }
         articles[index] = null;
@@ -467,7 +463,6 @@ var articleModel = (function () {
         console.log("Post successfully edited");
         return true;
     }
-
     function removeArticle(id) {
         for (var i = 0; i < articles.length; i++) {
             if (articles[i] !== null && articles[i].id == id) {
@@ -479,7 +474,6 @@ var articleModel = (function () {
         console.log('Post with that id not exist');
         return false;
     }
-
     function addTag(tag) {
         if (tags.indexOf(tag) == -1) {
             tags.push(tag);
@@ -499,13 +493,11 @@ var articleModel = (function () {
         console.log("Tag not removed");
         return false;
     }
-
     function logArray(array) {
         for (var i = 0; i < array.length; i++) {
             console.log(array[i]);
         }
     }
-
     return {
         getArticle: getArticle,
         getArticles: getArticles,
@@ -572,7 +564,7 @@ var postLoader = (function () {
         temp.content.querySelector(".post-author").textContent = article.author;
         temp.content.querySelector(".image-cropper").lastElementChild.src = article.imageSrc;
         temp.content.querySelector(".post-tags").innerHTML = article.tags;
-       
+
         if (user == null) {
             var controlButtons = temp.content.querySelector(".control-buttons");
             var userInfo = document.querySelector(".user-info").lastElementChild.src = "images/notuserlogo.png";
@@ -605,7 +597,7 @@ document.addEventListener('DOMContentLoaded', startApp)
 function startApp() {
     postLoader.init();
     //1
-    //renderPosts(0, 25);
+    renderPosts(0,25);
     //2
     postLoader.insertPostInDOM({
         id: "21",
@@ -624,10 +616,10 @@ function startApp() {
     //3
     postLoader.removePostFromDom(20);
     //4
-    postLoader.editPostInDom(21, {
+    postLoader.editPostInDom(21,{
         title: "Легенда уже вернулась, алло, это сайт ATAC",
         imageSrc: "images/legend.png",
-        summary: "Лучший новостной сайт у вас перед глазами!"
+        summary:"Лучший новостной сайт у вас перед глазами!"
     });
     //5
     //Сделана проверка в функции loadPost, ибо нет смысла изначально создавать эти элементы, чтобы потом удалить.
@@ -636,10 +628,10 @@ function startApp() {
 
     //Пользователь
     user = "Brama inc."
-    renderPosts(0, 25);
+    renderPosts(0,25);
     //Нет пользователя
     user = null;
-    renderPosts(0, 25);
+    renderPosts(0,25);
 }
 
 function renderPosts(skip, top) {
