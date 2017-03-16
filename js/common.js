@@ -614,6 +614,7 @@ function startApp() {
             "Дизайн"]
     });
     //3
+
     postLoader.removePostFromDom(20);
     //4
     postLoader.editPostInDom(21,{
