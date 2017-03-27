@@ -653,20 +653,20 @@ var postLoader = (function () {
     }
 
     function insertError() {
-        var temp = CONTENT_AREA.firstChild;
-        var innerHtml = CONTENT_AREA.innerHTML;
-        temp.className = 'removed-content';
-        temp.id = 'removed-content';
+        CONTENT_AREA.className = 'removed-content';
+        CONTENT_AREA.id = 'removed-content';
         CONTENT_AREA.appendChild(temp);
         document.getElementById('removed-content').addEventListener('animationend', function (e) {
-            removePostsFromDom();
-            pushErr();
-            temp.remove();
-        });
-        function pushErr() {
-            var temp = ERROR_TEMPLATE;
+            CONTENT_AREA.className = 'content';
             if (!CONTENT_AREA.contains(document.querySelector(".error-window"))) {
                 removePostsFromDom();
+                CONTENT_AREA.insertBefore(temp.content.querySelector(".error-window").cloneNode(true), CONTENT_AREA.firstChild);
+            }
+        });
+        function pushErr() {
+            if (!CONTENT_AREA.contains(document.querySelector(".error-window"))) {
+                removePostsFromDom();
+                var temp = ERROR_TEMPLATE;
                 CONTENT_AREA.insertBefore(temp.content.querySelector(".error-window").cloneNode(true), CONTENT_AREA.firstChild);
             }
         }
@@ -686,7 +686,7 @@ var postLoader = (function () {
                     return;
                 }
                 draw(timePassed);
-            }, 20);
+            }, 25);
         }
         function draw(timePassed) {
             CONTENT_AREA.style.paddingTop = timePassed * 2 + 'px';
