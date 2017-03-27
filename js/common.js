@@ -1,3 +1,5 @@
+'use strict';
+
 var user = "Brama";
 
 var articleModel = (function () {
@@ -289,6 +291,7 @@ var articleModel = (function () {
         console.log('Post with that id doesn\'t exist');
         return null;
     }
+
     function getArticles(skip, top, filterConfig) {
         var approvedArticles = [];
         if (filterConfig) {
@@ -306,6 +309,7 @@ var articleModel = (function () {
         });
         return approvedArticles.slice(skip, skip + top);
     }
+
     function getArticlesByFilter(filterConfig) {
         var filteredArray = [];
         for (var i = 0; i < articles.length; i++) {
@@ -334,6 +338,7 @@ var articleModel = (function () {
         }
         return filteredArray;
     }
+
     function validateArticle(article) {
         if (article == null || article === undefined) {
             console.log('Invalid article');
@@ -387,6 +392,7 @@ var articleModel = (function () {
         }
         return true;
     }
+
     function addArticle(article) {
         try {
             if (!article) {
@@ -424,7 +430,7 @@ var articleModel = (function () {
             return false;
         }
         for (var i = 0; i < articles.length; i++) {
-            if (articles[i].id  && (articles[i].id == id)) {
+            if (articles[i].id && (articles[i].id == id)) {
                 tempPost = clone(articles[i]);
                 index = i;
                 break;
@@ -463,6 +469,7 @@ var articleModel = (function () {
         console.log("Post successfully edited");
         return true;
     }
+
     function removeArticle(id) {
         for (var i = 0; i < articles.length; i++) {
             if (articles[i] !== null && articles[i].id == id) {
@@ -474,6 +481,7 @@ var articleModel = (function () {
         console.log('Post with that id not exist');
         return false;
     }
+
     function addTag(tag) {
         if (tags.indexOf(tag) == -1) {
             tags.push(tag);
@@ -493,11 +501,17 @@ var articleModel = (function () {
         console.log("Tag not removed");
         return false;
     }
+
     function logArray(array) {
         for (var i = 0; i < array.length; i++) {
             console.log(array[i]);
         }
     }
+
+    function getArticlesSize() {
+        return articles.length;
+    }
+
     return {
         getArticle: getArticle,
         getArticles: getArticles,
@@ -507,17 +521,27 @@ var articleModel = (function () {
         removeArticle: removeArticle,
         addTag: addTag,
         removeTag: removeTag,
-        logArray: logArray
+        logArray: logArray,
+        getArticlesSize: getArticlesSize
     };
 }());
 
 var postLoader = (function () {
+    var CONTENT_AREA;
+
     var POST_TEMPLATE;
-    var POST_LIST_NODE;
+    var DETAILED_POST_TEMPLATE;
+    var EDIT_POST_TEMPLATE;
+    var ERROR_TEMPLATE;
+    var LOGIN_TEMPLATE;
 
     function init() {
+        CONTENT_AREA = document.querySelector(".content");
         POST_TEMPLATE = document.querySelector('#template-post-item');
-        POST_LIST_NODE = document.querySelector(".content");
+        DETAILED_POST_TEMPLATE = document.querySelector('#detailed-post-template');
+        EDIT_POST_TEMPLATE = document.querySelector('#edit-post-template');
+        ERROR_TEMPLATE = document.querySelector('#error-window-template');
+        LOGIN_TEMPLATE = document.querySelector('#login-window-template');
     }
 
     function insertPostsInDOM(articles) {
@@ -525,28 +549,65 @@ var postLoader = (function () {
         var postsNodes = loadPosts(articles);
         /* вставим HTML элементы в '.article-list' элемент в DOM. */
         postsNodes.forEach(function (node) {
-            POST_LIST_NODE.appendChild(node);
+            CONTENT_AREA.appendChild(node);
         });
     }
 
     function insertPostInDOM(article) {
         articleModel.addArticle(article);
-        POST_LIST_NODE.appendChild(loadPost(article));
+        CONTENT_AREA.appendChild(loadPost(article));
+    }
+
+
+    function insertDetailedInDOM(article) {
+        // fix --> авториз = !авториз
+
+        CONTENT_AREA.appendChild(loadPost(article));
     }
 
     function removePostsFromDom() {
-        POST_LIST_NODE.innerHTML = '';
+        CONTENT_AREA.innerHTML = '';
     }
 
     function removePostFromDom(id) {
+        var post = document.getElementById(id.toString());
+        if (post) {
+            post.className = 'removed-item';
+            post.id = 'removed-item';
+            var contentStartPadding = 130, contentEndPadding = 330, coef = 0.7;
+            if (CONTENT_AREA.contains(document.querySelector(".login-window"))) {
+                contentStartPadding = 120;
+                contentEndPadding = 120;
+                coef = 0;
+            }
+            document.getElementById('removed-item').addEventListener('animationend', function (e) {
+                CONTENT_AREA.style.paddingTop = contentEndPadding + 'px';
+                CONTENT_AREA.removeChild(post);
+                articleModel.removeArticle(id);
+                var ANIMATION_TIME = 300;
+                var start = Date.now();
+                var timer = setInterval(function () {
+                    var timePassed = Date.now() - start;
+                    if (timePassed >= ANIMATION_TIME) {
+                        clearInterval(timer);
+                        CONTENT_AREA.style.paddingTop = contentStartPadding + 'px';
+                        return;
+                    }
+                    draw(timePassed);
+                }, 20);
+            });
+        }
+        function draw(timePassed) {
+            CONTENT_AREA.style.paddingTop = contentEndPadding - timePassed * coef + 'px';
+        }
+
         articleModel.removeArticle(id);
-        renderPosts(0, 25);
-        // Holly fucking shit, 2 часа тыкался и все равно нихера не работает
+        // Holly fucking shit, 2.5 часа тыкался и заработало
     }
 
     function editPostInDom(id, article) {
         articleModel.editArticle(id, article);
-        renderPosts(0, 25);
+        //renderPosts(0, 25);
     }
 
     function loadPosts(articles) {
@@ -557,7 +618,7 @@ var postLoader = (function () {
 
     function loadPost(article) {
         var temp = POST_TEMPLATE;
-        temp.content.querySelector(".post").dataset.id = article.id;
+        temp.content.querySelector(".post").id = article.id;
         temp.content.querySelector(".post-title").textContent = article.title;
         temp.content.querySelector(".post-short-description").textContent = article.summary;
         temp.content.querySelector(".post-date").textContent = formatDate(article.createdAt);
@@ -577,6 +638,61 @@ var postLoader = (function () {
         return temp.content.querySelector('.post').cloneNode(true);
     }
 
+    function insertDetailedPost(article) {
+
+    }
+
+    function insertEditPost(article) {
+        //not remove all
+        if (!article) {
+
+        }
+        else {
+            // adding new post
+        }
+    }
+
+    function insertError() {
+        var temp = CONTENT_AREA.firstChild;
+        var innerHtml = CONTENT_AREA.innerHTML;
+        temp.className = 'removed-content';
+        temp.id = 'removed-content';
+        CONTENT_AREA.appendChild(temp);
+        document.getElementById('removed-content').addEventListener('animationend', function (e) {
+            removePostsFromDom();
+            pushErr();
+            temp.remove();
+        });
+        function pushErr() {
+            var temp = ERROR_TEMPLATE;
+            if (!CONTENT_AREA.contains(document.querySelector(".error-window"))) {
+                removePostsFromDom();
+                CONTENT_AREA.insertBefore(temp.content.querySelector(".error-window").cloneNode(true), CONTENT_AREA.firstChild);
+            }
+        }
+    }
+
+    function insertLogin() {
+        var temp = LOGIN_TEMPLATE;
+        if (!CONTENT_AREA.contains(document.querySelector(".login-window"))) {
+            var ANIMATION_TIME = 300;
+            var start = Date.now();
+            var timer = setInterval(function () {
+                var timePassed = Date.now() - start;
+                if (timePassed >= ANIMATION_TIME) {
+                    clearInterval(timer);
+                    CONTENT_AREA.style.paddingTop = 120 + 'px';
+                    CONTENT_AREA.insertBefore(temp.content.querySelector(".login-window").cloneNode(true), CONTENT_AREA.firstChild);
+                    return;
+                }
+                draw(timePassed);
+            }, 20);
+        }
+        function draw(timePassed) {
+            CONTENT_AREA.style.paddingTop = timePassed * 2 + 'px';
+        }
+    }
+
     function formatDate(d) {
         return d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + ' ' +
             d.getUTCHours() + ':' + d.getMinutes();
@@ -588,55 +704,138 @@ var postLoader = (function () {
         removePostsFromDom: removePostsFromDom,
         removePostFromDom: removePostFromDom,
         insertPostInDOM: insertPostInDOM,
+        insertLoginInDom: insertLogin,
+        insertErrorInDom: insertError,
+        insertEditInDom: insertEditPost,
+        insertDetailedPostInDom: insertDetailedInDOM,
         editPostInDom: editPostInDom
     };
 }());
 
-document.addEventListener('DOMContentLoaded', startApp)
+function addEventListeners() {
+    var headerRowElements = document.querySelector('.header-row')
+    var postListNodes = document.querySelector('.content');
+
+    headerRowElements.addEventListener('click', eventHeader);
+    postListNodes.addEventListener('click', eventPost);
+}
+function eventHeader(event) {
+    var elementClassName = event.target.className;
+    if (!elementClassName) {
+        elementClassName = event.target.parentNode.className;
+    }
+    switch (elementClassName) {
+        case 'logo':
+            // fix -->  возврат на главную
+            break;
+        case 'find-button':
+            // fix -->  поиск
+            break;
+        case 'user-info':
+            // fix --> авториз = !авториз
+            postLoader.insertLoginInDom();
+            break;
+        case 'add-button':
+            // fix --> очистить все и вставить шаблон добавления
+            postLoader.removePostsFromDom();
+            break;
+        case 'filter-button':
+            // fix --> выезд фильтра справа и заезд обратно
+            postLoader.insertErrorInDom();
+            break;
+
+    }
+}
+function eventPost(event) {
+    switch (event.target.className) {
+        case  'button-delete-img':
+            var articleToDelete = parseInt(event.target.parentElement.parentElement.parentElement.getAttribute('id'));
+            postLoader.removePostFromDom(articleToDelete);
+            break;
+        case 'button-change-img':
+            // fix --> Добавить изменение поста
+            // fix --> Добавить анимацию удаления всех
+            break;
+    }
+}
+
+document.addEventListener('DOMContentLoaded', startApp);
+addEventListeners();
 
 function startApp() {
+
     postLoader.init();
     //1
-    renderPosts(0,25);
+    renderPosts(0, 25);
     //2
-    postLoader.insertPostInDOM({
-        id: "21",
-        title: "Новый добавленный пост",
-        summary: "На выставке MWC 2017 в Барселоне компания HMD Global, которая  на выпуск смартфонов  Nokia, представила новые Android-смартфоны разных ценовыхкатегорий — Nokia 3, Nokia 5 и Nokia 6.",
-        createdAt: new Date('2017-02-26T20:31:00'),
-        author: "Brama",
-        content: "Nokia 3 — самый бюджетный аппарат из всей линейки, он стоит от 147 долларов США.Смартфон получил металлический корпус с задней панелью из поликарбоната, 5,2-дюймовый экран с разрешением 1280 на 720 пикселей, процессор MTK 6737, 2 ГБ оперативной и 16 ГБ встроенной памяти, а также фронтальную и основную камеры на 8 Мп. Емкость батареи — 2650 мАч.",
-        imageSrc: "images/10.jpg",
-        tags: ["MWC 2017",
-            "Гаджеты",
-            "Смартфоны",
-            "Выставки",
-            "Дизайн"]
-    });
-    //3
+    /*
+     postLoader.insertPostInDOM({
+     id: "21",
+     title: "Новый добавленный пост",
+     summary: "На выставке MWC 2017 в Барселоне компания HMD Global, которая  на выпуск смартфонов  Nokia, представила новые Android-смартфоны разных ценовыхкатегорий — Nokia 3, Nokia 5 и Nokia 6.",
+     createdAt: new Date('2017-02-26T20:31:00'),
+     author: "Brama",
+     content: "Nokia 3 — самый бюджетный аппарат из всей линейки, он стоит от 147 долларов США.Смартфон получил металлический корпус с задней панелью из поликарбоната, 5,2-дюймовый экран с разрешением 1280 на 720 пикселей, процессор MTK 6737, 2 ГБ оперативной и 16 ГБ встроенной памяти, а также фронтальную и основную камеры на 8 Мп. Емкость батареи — 2650 мАч.",
+     imageSrc: "images/10.jpg",
+     tags: ["MWC 2017",
+     "Гаджеты",
+     "Смартфоны",
+     "Выставки",
+     "Дизайн"]
+     });
+     //3
 
-    postLoader.removePostFromDom(20);
-    //4
-    postLoader.editPostInDom(21,{
-        title: "Легенда уже вернулась, алло, это сайт ATAC",
-        imageSrc: "images/legend.png",
-        summary:"Лучший новостной сайт у вас перед глазами!"
-    });
-    //5
-    //Сделана проверка в функции loadPost, ибо нет смысла изначально создавать эти элементы, чтобы потом удалить.
-    //6
-    //Нет смысла заполнять опции фильтра, так как он отображается только по нажатию на кнопку.
+     postLoader.removePostFromDom(20);
+     //4
+     postLoader.editPostInDom(21, {
+     title: "Легенда уже вернулась, алло, это сайт ATAC",
+     imageSrc: "images/legend.png",
+     summary: "Лучший новостной сайт у вас перед глазами!"
+     });
+     //5
+     //Сделана проверка в функции loadPost, ибо нет смысла изначально создавать эти элементы, чтобы потом удалить.
+     //6
+     //Нет смысла заполнять опции фильтра, так как он отображается только по нажатию на кнопку.
 
-    //Пользователь
-    user = "Brama inc."
-    renderPosts(0,25);
-    //Нет пользователя
-    user = null;
-    renderPosts(0,25);
+     //Пользователь
+     user = "Brama inc."
+     renderPosts(0, 25);
+     */
 }
 
 function renderPosts(skip, top) {
-    postLoader.removePostsFromDom();
+    //postLoader.removePostsFromDom();
     var posts = articleModel.getArticles(skip, top);
     postLoader.insertPostsInDOM(posts);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
