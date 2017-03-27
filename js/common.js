@@ -527,6 +527,7 @@ var articleModel = (function () {
 }());
 
 var postLoader = (function () {
+    var COLUMN;
     var CONTENT_AREA;
 
     var POST_TEMPLATE;
@@ -536,6 +537,7 @@ var postLoader = (function () {
     var LOGIN_TEMPLATE;
 
     function init() {
+        COLUMN = document.querySelector(".column");
         CONTENT_AREA = document.querySelector(".content");
         POST_TEMPLATE = document.querySelector('#template-post-item');
         DETAILED_POST_TEMPLATE = document.querySelector('#detailed-post-template');
@@ -559,158 +561,296 @@ var postLoader = (function () {
     }
 
 
-    function insertDetailedInDOM(article) {
-        // fix --> авториз = !авториз
 
-        CONTENT_AREA.appendChild(loadPost(article));
-    }
 
-    function removePostsFromDom() {
-        CONTENT_AREA.innerHTML = '';
-    }
+function removePostsFromDom() {
+    COLUMN.innerHTML = '';
+    CONTENT_AREA.innerHTML = '';
+    document.querySelector(".column").appendChild(CONTENT_AREA);
+}
 
-    function removePostFromDom(id) {
-        var post = document.getElementById(id.toString());
-        if (post) {
-            post.className = 'removed-item';
-            post.id = 'removed-item';
-            var contentStartPadding = 130, contentEndPadding = 330, coef = 0.7;
-            if (CONTENT_AREA.contains(document.querySelector(".login-window"))) {
-                contentStartPadding = 120;
-                contentEndPadding = 120;
-                coef = 0;
-            }
-            document.getElementById('removed-item').addEventListener('animationend', function (e) {
-                CONTENT_AREA.style.paddingTop = contentEndPadding + 'px';
-                CONTENT_AREA.removeChild(post);
-                articleModel.removeArticle(id);
-                var ANIMATION_TIME = 300;
-                var start = Date.now();
-                var timer = setInterval(function () {
-                    var timePassed = Date.now() - start;
-                    if (timePassed >= ANIMATION_TIME) {
-                        clearInterval(timer);
-                        CONTENT_AREA.style.paddingTop = contentStartPadding + 'px';
-                        return;
-                    }
-                    draw(timePassed);
-                }, 20);
-            });
+function removePostFromDom(id) {
+    var post = document.getElementById(id.toString());
+    if (post) {
+        post.className = 'removed-item';
+        post.id = 'removed-item';
+        var contentStartPadding = 130, contentEndPadding = 330, coef = 0.7;
+        if (CONTENT_AREA.contains(document.querySelector(".login-window"))) {
+            contentStartPadding = 120;
+            contentEndPadding = 120;
+            coef = 0;
         }
-        function draw(timePassed) {
-            CONTENT_AREA.style.paddingTop = contentEndPadding - timePassed * coef + 'px';
+        if (CONTENT_AREA.contains(document.querySelector(".detailed-post"))) {
+            contentStartPadding = 130;
+            contentEndPadding = 130;
+            coef = 0;
         }
-
-        articleModel.removeArticle(id);
-        // Holly fucking shit, 2.5 часа тыкался и заработало
-    }
-
-    function editPostInDom(id, article) {
-        articleModel.editArticle(id, article);
-        //renderPosts(0, 25);
-    }
-
-    function loadPosts(articles) {
-        return articles.map(function (article) {
-            return loadPost(article);
-        });
-    }
-
-    function loadPost(article) {
-        var temp = POST_TEMPLATE;
-        temp.content.querySelector(".post").id = article.id;
-        temp.content.querySelector(".post-title").textContent = article.title;
-        temp.content.querySelector(".post-short-description").textContent = article.summary;
-        temp.content.querySelector(".post-date").textContent = formatDate(article.createdAt);
-        temp.content.querySelector(".post-author").textContent = article.author;
-        temp.content.querySelector(".image-cropper").lastElementChild.src = article.imageSrc;
-        temp.content.querySelector(".post-tags").innerHTML = article.tags;
-
-        if (user == null) {
-            var controlButtons = temp.content.querySelector(".control-buttons");
-            var userInfo = document.querySelector(".user-info").lastElementChild.src = "images/notuserlogo.png";
-            var addPostButton = document.querySelector(".add-button");
-            if (controlButtons) {
-                temp.content.querySelector(".post").removeChild(controlButtons);
-                document.querySelector(".row").removeChild(addPostButton);
-            }
-        }
-        return temp.content.querySelector('.post').cloneNode(true);
-    }
-
-    function insertDetailedPost(article) {
-
-    }
-
-    function insertEditPost(article) {
-        //not remove all
-        if (!article) {
-
-        }
-        else {
-            // adding new post
-        }
-    }
-
-    function insertError() {
-        CONTENT_AREA.className = 'removed-content';
-        CONTENT_AREA.id = 'removed-content';
-        CONTENT_AREA.appendChild(temp);
-        document.getElementById('removed-content').addEventListener('animationend', function (e) {
-            CONTENT_AREA.className = 'content';
-            if (!CONTENT_AREA.contains(document.querySelector(".error-window"))) {
-                removePostsFromDom();
-                CONTENT_AREA.insertBefore(temp.content.querySelector(".error-window").cloneNode(true), CONTENT_AREA.firstChild);
-            }
-        });
-        function pushErr() {
-            if (!CONTENT_AREA.contains(document.querySelector(".error-window"))) {
-                removePostsFromDom();
-                var temp = ERROR_TEMPLATE;
-                CONTENT_AREA.insertBefore(temp.content.querySelector(".error-window").cloneNode(true), CONTENT_AREA.firstChild);
-            }
-        }
-    }
-
-    function insertLogin() {
-        var temp = LOGIN_TEMPLATE;
-        if (!CONTENT_AREA.contains(document.querySelector(".login-window"))) {
+        document.getElementById('removed-item').addEventListener('animationend', function (e) {
+            CONTENT_AREA.style.paddingTop = contentEndPadding + 'px';
+            CONTENT_AREA.removeChild(post);
+            articleModel.removeArticle(id);
             var ANIMATION_TIME = 300;
             var start = Date.now();
             var timer = setInterval(function () {
                 var timePassed = Date.now() - start;
                 if (timePassed >= ANIMATION_TIME) {
                     clearInterval(timer);
-                    CONTENT_AREA.style.paddingTop = 120 + 'px';
-                    CONTENT_AREA.insertBefore(temp.content.querySelector(".login-window").cloneNode(true), CONTENT_AREA.firstChild);
+                    CONTENT_AREA.style.paddingTop = contentStartPadding + 'px';
                     return;
                 }
                 draw(timePassed);
-            }, 25);
-        }
-        function draw(timePassed) {
-            CONTENT_AREA.style.paddingTop = timePassed * 2 + 'px';
-        }
+            }, 10);
+        });
+    }
+    function draw(timePassed) {
+        CONTENT_AREA.style.paddingTop = contentEndPadding - timePassed * coef + 'px';
     }
 
-    function formatDate(d) {
-        return d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + ' ' +
-            d.getUTCHours() + ':' + d.getMinutes();
+    articleModel.removeArticle(id);
+    // Holly fucking shit, 2.5 часа тыкался и заработало
+}
+function removeDetailedPostFromDom(id) {
+    var post = document.getElementById(id.toString());
+    if (post) {
+        post.className = 'det-removed-item';
+        post.id = 'det-removed-item';
+        var contentStartPadding = 130, contentEndPadding = 430, coef = 0.6;
+        document.getElementById('det-removed-item').addEventListener('animationend', function (e) {
+            CONTENT_AREA.style.paddingTop = contentEndPadding + 'px';
+            CONTENT_AREA.removeChild(post);
+            var ANIMATION_TIME = 500;
+            var start = Date.now();
+            var timer = setInterval(function () {
+                var timePassed = Date.now() - start;
+                if (timePassed >= ANIMATION_TIME) {
+                    clearInterval(timer);
+                    CONTENT_AREA.style.paddingTop = contentStartPadding + 'px';
+                    return;
+                }
+                draw(timePassed);
+            }, 10);
+        });
     }
+    function draw(timePassed) {
+        CONTENT_AREA.style.paddingTop = contentEndPadding - timePassed * coef + 'px';
+    }
+}
 
-    return {
-        init: init,
-        insertPostsInDOM: insertPostsInDOM,
-        removePostsFromDom: removePostsFromDom,
-        removePostFromDom: removePostFromDom,
-        insertPostInDOM: insertPostInDOM,
-        insertLoginInDom: insertLogin,
-        insertErrorInDom: insertError,
-        insertEditInDom: insertEditPost,
-        insertDetailedPostInDom: insertDetailedInDOM,
-        editPostInDom: editPostInDom
+
+function loadPosts(articles) {
+    return articles.map(function (article) {
+        return loadPost(article);
+    });
+}
+
+function loadPost(article) {
+    var temp = POST_TEMPLATE;
+    temp.content.querySelector(".post").id = article.id;
+    temp.content.querySelector(".post-title").textContent = article.title;
+    temp.content.querySelector(".post-short-description").textContent = article.summary;
+    temp.content.querySelector(".post-date").textContent = formatDate(article.createdAt);
+    temp.content.querySelector(".post-author").textContent = article.author;
+    temp.content.querySelector(".image-cropper").lastElementChild.src = article.imageSrc;
+    temp.content.querySelector(".post-tags").innerHTML = article.tags;
+
+    //если нет юзера - удаляем
+    console.log(user);
+
+    var addPostButton = document.querySelector(".add-button");
+    var controlButtons = temp.content.querySelector(".control-buttons");
+    if (!user) {
+        var userInfo = document.querySelector(".user-info").lastElementChild.src = "images/notuserlogo.png";
+        if (controlButtons) {
+            temp.content.querySelector(".post").removeChild(controlButtons);
+            document.querySelector(".header-row").removeChild(addPostButton);
+        }
+        console.log('deleted');
+    }
+    return temp.content.querySelector('.post').cloneNode(true);
+}
+
+function returnToMain() {
+    var removedContent = document.querySelector(".content").cloneNode(true);
+    removedContent.className = 'removed-content';
+    removedContent.id = 'removed-content';
+    document.querySelector(".column").removeChild(CONTENT_AREA);
+
+    removePostsFromDom();
+    renderPosts(0, articleModel.getArticlesSize());
+}
+
+function checkAuthInput() {
+    var inputUser = document.querySelector(".login-input").value;
+    var inputPass = document.querySelector(".pass-input").value;
+
+    if (checkLogin(inputUser, inputPass)) {
+        returnToMain();
+    } else {
+        insertError("Неправильный пользователь");
+    }
+}
+
+function checkLogin(log, pass) {
+    if (log === 'admin' && pass === 'admin') {
+        user = 'admin';
+        return true;
+    }
+    if (log === 'Brama' && pass === 'Brama') {
+        user = 'Brama';
+        return true;
+    }
+    return false;
+}
+
+function insertEditPost(article) {
+    //not remove all
+    var renderedArticle = EDIT_POST_TEMPLATE;
+    var removedContent = document.querySelector(".content").cloneNode(true);
+    removedContent.className = 'removed-content';
+    removedContent.id = 'removed-content';
+    document.querySelector(".column").removeChild(CONTENT_AREA);
+    document.querySelector(".column").appendChild(removedContent);
+    document.getElementById('removed-content').addEventListener('animationend', function (e) {
+        removePostsFromDom();
+        if (article) {
+            renderedArticle.content.querySelector(".edit-post").id = article.id;
+            renderedArticle.content.querySelector(".edit-post-title").value = article.title;
+            renderedArticle.content.querySelector(".edit-post-tags").value = article.tags;
+            renderedArticle.content.querySelector(".edit-image-cropper").lastElementChild.src = article.imageSrc;
+
+            renderedArticle.content.querySelector(".edit-post-id").textContent = 'ID-'+article.id;
+            renderedArticle.content.querySelector(".edit-post-author").textContent = article.author;
+            renderedArticle.content.querySelector(".edit-post-date").textContent = formatDate(article.createdAt);
+
+            renderedArticle.content.querySelector(".edit-post-short-description").textContent = article.summary;
+            renderedArticle.content.querySelector(".edit-post-description").textContent = article.content;
+        } else {
+            // adding new post
+        }
+        CONTENT_AREA.insertBefore(renderedArticle.content.querySelector(".edit-post").cloneNode(true), CONTENT_AREA.firstChild);
+        document.querySelector('.edit-enter').addEventListener('click',editPostInDom);
+    });
+}
+
+function editPostInDom(id, article) {
+    var newArticle = {
+        title: document.querySelector(".edit-post-title").value,
+        summary: document.querySelector(".edit-post-description").value,
+        tags: document.querySelector(".edit-post-tags").value.split(","),
+        content: document.querySelector(".edit-post-description").value,
     };
-}());
+    var articleId = document.querySelector('.edit-post-id').innerHTML;
+    if(articleModel.editArticle(parseInt(articleId.substr(3,articleId.length)), newArticle)){
+        document.querySelector('.edit-enter').textContent = "Изменено успешно!";
+        document.querySelector('.edit-enter').style.background = "#5188E8";
+        setTimeout(postLoader.returnToMain,2000);
+    }else{
+        alert("Измененный пост не проходит модерацию на проверку!");
+    }
+    //renderPosts(0, 25);
+}
+
+function insertError(errCode) {
+    var removedContent = document.querySelector(".content").cloneNode(true);
+    removedContent.className = 'removed-content';
+    removedContent.id = 'removed-content';
+    document.querySelector(".column").removeChild(CONTENT_AREA);
+    document.querySelector(".column").appendChild(removedContent);
+    document.getElementById('removed-content').addEventListener('animationend', function (e) {
+        removePostsFromDom();
+
+        var template = ERROR_TEMPLATE;
+        template.content.querySelector(".error-window-code").textContent = 'Код ошибки : ' + errCode;
+        CONTENT_AREA.insertBefore(template.content.querySelector(".error-window").cloneNode(true), CONTENT_AREA.firstChild);
+        document.querySelector('.error-window').addEventListener('click', returnToMain);
+    });
+}
+
+function insertLogin() {
+    var temp = LOGIN_TEMPLATE;
+    if (!CONTENT_AREA.contains(document.querySelector(".login-window"))) {
+        var ANIMATION_TIME = 300;
+        var start = Date.now();
+        var timer = setInterval(function () {
+            var timePassed = Date.now() - start;
+            if (timePassed >= ANIMATION_TIME) {
+                clearInterval(timer);
+                CONTENT_AREA.style.paddingTop = 120 + 'px';
+                CONTENT_AREA.insertBefore(temp.content.querySelector(".login-window").cloneNode(true), CONTENT_AREA.firstChild);
+                document.querySelector('.login-window-enter-button').addEventListener('click', checkAuthInput);
+                return;
+            }
+            draw(timePassed);
+        }, 25);
+    }
+    function draw(timePassed) {
+        CONTENT_AREA.style.paddingTop = timePassed * 2 + 'px';
+    }
+}
+
+function insertDetailedInDOM(article) {
+    // fix --> авториз = !авториз
+    if (CONTENT_AREA.contains(document.getElementById(article.id))) {
+        var temp = DETAILED_POST_TEMPLATE;
+        temp.content.querySelector(".detailed-post").id = article.id + '999';
+        temp.content.querySelector(".detailed-post-title").textContent = article.title;
+        temp.content.querySelector(".detailed-post-description").textContent = article.content;
+        temp.content.querySelector(".detailed-post-date").textContent = formatDate(article.createdAt);
+        temp.content.querySelector(".detailed-post-author").textContent = article.author;
+        temp.content.querySelector(".detailed-image-cropper").lastElementChild.src = article.imageSrc;
+        temp.content.querySelector(".detailed-post-tags").innerHTML = article.tags;
+
+        //если нет юзера - удаляем
+        if (!user) {
+            var controlButtons = temp.content.querySelector(".detailed-control-buttons");
+            var userInfo = document.querySelector(".user-info").lastElementChild.src = "images/notuserlogo.png";
+            var addPostButton = document.querySelector(".add-button");
+            if (controlButtons && addPostButton) {
+                temp.content.querySelector(".detailed-post").removeChild(controlButtons);
+                document.querySelector(".header-row").removeChild(addPostButton);
+            }
+            console.log('deleted');
+        }
+        var ANIMATION_TIME = 300;
+        var start = Date.now();
+        var timer = setInterval(function () {
+            var timePassed = Date.now() - start;
+            if (timePassed >= ANIMATION_TIME) {
+                clearInterval(timer);
+                CONTENT_AREA.style.paddingTop = 130 + 'px';
+                CONTENT_AREA.insertBefore(temp.content.querySelector('.detailed-post').cloneNode(true), CONTENT_AREA.firstChild);
+                return;
+            }
+            draw(timePassed);
+        }, 25);
+        event.stopPropagation();
+    }
+    function draw(timePassed) {
+        CONTENT_AREA.style.paddingTop = timePassed * 1.5 + 'px';
+    }
+
+}
+
+function formatDate(d) {
+    return d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + ' ' +
+        d.getUTCHours() + ':' + d.getMinutes();
+}
+
+return {
+    init: init,
+    insertPostsInDOM: insertPostsInDOM,
+    removePostsFromDom: removePostsFromDom,
+    removePostFromDom: removePostFromDom,
+    removeDetailedPostFromDom: removeDetailedPostFromDom,
+    insertPostInDOM: insertPostInDOM,
+    insertLoginInDom: insertLogin,
+    insertErrorInDom: insertError,
+    insertEditInDom: insertEditPost,
+    insertDetailedPostInDom: insertDetailedInDOM,
+    editPostInDom: editPostInDom,
+    returnToMain: returnToMain
+};}()
+);
 
 function addEventListeners() {
     var headerRowElements = document.querySelector('.header-row')
@@ -718,6 +858,7 @@ function addEventListeners() {
 
     headerRowElements.addEventListener('click', eventHeader);
     postListNodes.addEventListener('click', eventPost);
+
 }
 function eventHeader(event) {
     var elementClassName = event.target.className;
@@ -726,7 +867,7 @@ function eventHeader(event) {
     }
     switch (elementClassName) {
         case 'logo':
-            // fix -->  возврат на главную
+            postLoader.returnToMain();
             break;
         case 'find-button':
             // fix -->  поиск
@@ -736,14 +877,12 @@ function eventHeader(event) {
             postLoader.insertLoginInDom();
             break;
         case 'add-button':
-            // fix --> очистить все и вставить шаблон добавления
-            postLoader.removePostsFromDom();
+            postLoader.insertEditInDom();
             break;
         case 'filter-button':
             // fix --> выезд фильтра справа и заезд обратно
-            postLoader.insertErrorInDom();
+            postLoader.insertErrorInDom("Sorry no filter yet");
             break;
-
     }
 }
 function eventPost(event) {
@@ -752,9 +891,33 @@ function eventPost(event) {
             var articleToDelete = parseInt(event.target.parentElement.parentElement.parentElement.getAttribute('id'));
             postLoader.removePostFromDom(articleToDelete);
             break;
+        case  'detailed-button-delete-img':
+            var articleToDelete = parseInt(event.target.parentElement.parentElement.parentElement.getAttribute('id'));
+            postLoader.removeDetailedPostFromDom(articleToDelete);
+            break;
         case 'button-change-img':
+            var currentEvent = event.target;
+            while (!currentEvent.hasAttribute("id")) {
+                currentEvent = currentEvent.parentElement;
+            }
+            var articleToInsertNumber = parseInt(currentEvent.getAttribute('id'));
+            postLoader.insertEditInDom(articleModel.getArticle(articleToInsertNumber));
             // fix --> Добавить изменение поста
             // fix --> Добавить анимацию удаления всех
+            break;
+        case 'post':
+        case 'post-content':
+        case 'post-title':
+        case 'post-tags':
+        case 'post-author':
+        case 'post-date':
+        case 'post-short-description':
+            var currentEvent = event.target;
+            while (!currentEvent.hasAttribute("id")) {
+                currentEvent = currentEvent.parentElement;
+            }
+            var articleToInsertNumber = parseInt(currentEvent.getAttribute('id'));
+            postLoader.insertDetailedPostInDom(articleModel.getArticle(articleToInsertNumber));
             break;
     }
 }
@@ -804,8 +967,9 @@ function startApp() {
 }
 
 function renderPosts(skip, top) {
-    //postLoader.removePostsFromDom();
+    postLoader.removePostsFromDom();
     var posts = articleModel.getArticles(skip, top);
+    console.log(user);
     postLoader.insertPostsInDOM(posts);
 }
 

@@ -92,8 +92,9 @@ body{
 .content {
     overflow: auto;
     overflow-y: hidden;
+    overflow-x: hidden;
     width: 100%;
-    min-height: 700px;
+    min-height: 800px;
     padding-top: 130px;
     padding-bottom: 30px;
     margin: 0 auto;
@@ -141,8 +142,9 @@ body{
 .removed-content {
     overflow: auto;
     overflow-y: hidden;
+    overflow-x: hidden;
     width: 100%;
-    min-height: 700px;
+    min-height: 800px;
     padding-top: 130px;
     padding-bottom: 30px;
     margin: 0 auto;
@@ -363,11 +365,41 @@ body{
 }
 
 .detailed-post{
-    width: 90%;
+    animation: det-appear-animation 0.7s cubic-bezier(0.50,1.04, 0.78, 1) forwards;
+    width: 85%;
     min-height: 300px;
     margin: 50px auto 25px;
     border-radius: 20px;
     background-color: #FFFFFF;
+}
+.det-removed-item{
+    width: 85%;
+    min-height: 300px;
+    margin: 50px auto 25px;
+    border-radius: 20px;
+    background-color: #FFFFFF;
+    animation: det-removed-item-animation 0.8s cubic-bezier(0.55, -0.4, 0.91, 0.94) forwards;
+}
+@keyframes det-removed-item-animation {
+    0% {
+        opacity: 1;
+        transform: rotateZ(0);
+    }
+    100% {
+        height: 150px;
+        opacity: 0;
+        transform: translateY(600px) rotateZ(-90deg);
+    }
+}
+@keyframes det-appear-animation {
+    0% {
+        opacity: 0;
+        transform: translateX(1400px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }
 .detailed-control-buttons{
     float: right;
@@ -439,11 +471,22 @@ body{
 }
 
 .edit-post{
-    width: 95%;
+    width: 80%;
     min-height: 400px;
     margin: 50px auto 25px;
     border-radius: 20px;
     background-color: #FFFFFF;
+    animation: edit-appear-animation 1s cubic-bezier(0.12,1.04, 0.78, 1) forwards;
+}
+@keyframes edit-appear-animation {
+    0% {
+        opacity: 0;
+        transform: translateX(500px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }
 .edit-image-cropper{
     position: relative;
@@ -484,7 +527,6 @@ body{
     padding-left: 10px;
     font-size: 20px;
 }
-
 .edit-post-id{
     float: left;
     margin-left: 10px;
@@ -523,6 +565,26 @@ body{
     height: 240px;
     font-size: 20px;
     padding-left: 10px;
+}
+.edit-post-submit{
+    width: 100%;
+    text-align: center;
+}
+.edit-enter {
+    width: 25%;
+    height: 46px;
+    align-content: center;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    font-size: 24px;
+    border-style: none;
+    border-radius: 10px;
+    color: #FFFFFF;
+    background-color: #81e600;
+}
+.edit-enter > a{
+    color: #FFFFFF;
+    text-decoration: none;
 }
 
 footer {

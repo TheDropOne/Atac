@@ -31,15 +31,18 @@
         <a class="filter-button" href="#" title="Фильтр"><img src="images/filter-button-icon.png"/></a>
     </div>
 </header>
-<div class="content">
+<div class="column">
+    <div class="content">
 
-    <script src="js/common.js" type="text/javascript"></script>
+        <script src="js/common.js" type="text/javascript"></script>
 
+    </div>
 </div>
-
+<!--
 <div>
     <a class="more-button" href="#" title="Ещё"><img src="images/down-button-icon.png"/></a>
 </div>
+-->
 <footer>
     <div class="footer-row">
         <div class="footer-logo">
@@ -81,13 +84,15 @@
     </div>
 </template>
 <template id="detailed-post-template">
-    <div class="detailed-post" data-id="id">
+    <div class="detailed-post" id="id">
         <div class="detailed-image-cropper">
             <img src="images/1.jpg" alt="Post logo">
         </div>
         <div class="detailed-control-buttons">
-            <button class="detailed-button-delete"><img src="images/cross.png" alt="X"/><a href="#"></a></button>
-            <button class="detailed-button-change"><img src="images/pencil.png" alt="edit"/><a href="#"></a></button>
+            <button class="detailed-button-delete"><img class="detailed-button-delete-img" src="images/cross.png"
+                                                        alt="X"/><a href="#"></a></button>
+            <button class="detailed-button-change"><img class="detailed-button-change-img" src="images/pencil.png"
+                                                        alt="edit"/><a href="#"></a></button>
         </div>
         <div class="detailed-post-content">
             <h1 class="detailed-post-title">Заголовок</h1>
@@ -105,13 +110,13 @@
     </div>
 </template>
 <template id="edit-post-template">
-    <div class="edit-post" data-id="id">
+    <div class="edit-post" id="editid">
         <div class="edit-image-cropper">
             <img src="images/1.jpg" alt="Post logo">
         </div>
         <div class="edit-post-meta">
             <input type="text" placeholder="Заголовок" class="edit-post-title">
-            <p class="edit-post-tags">#Ноутбук #MVC2016 #Ноутбук #MVC2016 #Ноутбук</p>
+            <input type="text" placeholder="#Ноутбук #MVC2016 #Ноутбук #MVC2016 #Ноутбук" class="edit-post-tags">
             <div class="static-row">
                 <p class="edit-post-id">ID-0003</p>
                 <p class="edit-post-author">Brama</p>
@@ -121,6 +126,10 @@
             <textarea class="edit-post-short-description">Краткое описание статьи будет здесь. </textarea>
             <textarea class="edit-post-description">Полное и детальное описание статьи будет здесь. </textarea>
         </div>
+        <div class="edit-post-submit">
+            <button class="edit-enter" title="Изменить"><a href="#">Изменить</a></button>
+        </div>
+
     </div>
 </template>
 <template id="error-window-template">
