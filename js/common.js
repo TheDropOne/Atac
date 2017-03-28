@@ -1,6 +1,6 @@
 'use strict';
 
-var user = "Brama";
+var user  ;
 
 var articleModel = (function () {
     var tags = ["MWC 2017", "Гаджеты", "Смартфоны", "Выставки", "Дизайн"];
@@ -644,7 +644,7 @@ function loadPosts(articles) {
 }
 
 function loadPost(article) {
-    var temp = POST_TEMPLATE;
+    var temp = POST_TEMPLATE.cloneNode(true);
     temp.content.querySelector(".post").id = article.id;
     temp.content.querySelector(".post-title").textContent = article.title;
     temp.content.querySelector(".post-short-description").textContent = article.summary;
@@ -660,11 +660,15 @@ function loadPost(article) {
     var controlButtons = temp.content.querySelector(".control-buttons");
     if (!user) {
         var userInfo = document.querySelector(".user-info").lastElementChild.src = "images/notuserlogo.png";
-        if (controlButtons) {
+        if (controlButtons ) {
             temp.content.querySelector(".post").removeChild(controlButtons);
+        }
+        if(addPostButton){
             document.querySelector(".header-row").removeChild(addPostButton);
         }
         console.log('deleted');
+    }else{
+        document.querySelector(".user-info").lastElementChild.src = "images/userlogo.png";
     }
     return temp.content.querySelector('.post').cloneNode(true);
 }
@@ -725,6 +729,17 @@ function insertEditPost(article) {
             renderedArticle.content.querySelector(".edit-post-short-description").textContent = article.summary;
             renderedArticle.content.querySelector(".edit-post-description").textContent = article.content;
         } else {
+            renderedArticle.content.querySelector(".edit-post").id = articleModel.getArticlesSize();
+            renderedArticle.content.querySelector(".edit-post-title").value = '';
+            renderedArticle.content.querySelector(".edit-post-tags").value = '';
+            renderedArticle.content.querySelector(".edit-image-cropper").lastElementChild.src = "images/notuserlogo.png";
+
+            renderedArticle.content.querySelector(".edit-post-id").textContent = '';
+            renderedArticle.content.querySelector(".edit-post-author").textContent = user;
+            renderedArticle.content.querySelector(".edit-post-date").textContent = formatDate(new Date());
+
+            renderedArticle.content.querySelector(".edit-post-short-description").textContent = '';
+            renderedArticle.content.querySelector(".edit-post-description").textContent = '';
             // adding new post
         }
         CONTENT_AREA.insertBefore(renderedArticle.content.querySelector(".edit-post").cloneNode(true), CONTENT_AREA.firstChild);
