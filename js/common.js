@@ -1,6 +1,6 @@
 'use strict';
 
-var user  ;
+var user = "fdf";
 
 var articleModel = (function () {
     var tags = ["MWC 2017", "Гаджеты", "Смартфоны", "Выставки", "Дизайн"];
@@ -525,7 +525,6 @@ var articleModel = (function () {
         getArticlesSize: getArticlesSize
     };
 }());
-
 var postLoader = (function () {
     var COLUMN;
     var CONTENT_AREA;
@@ -546,7 +545,14 @@ var postLoader = (function () {
         LOGIN_TEMPLATE = document.querySelector('#login-window-template');
     }
 
+    function insertPostInDOM(article) {
+        articleModel.addArticle(article);
+        CONTENT_AREA.appendChild(loadPost(article));
+    }
     function insertPostsInDOM(articles) {
+        //Пользователь
+        loadUserElements(user);
+
         /* для массива объектов статей получим соотвествующие HTML элементы */
         var postsNodes = loadPosts(articles);
         /* вставим HTML элементы в '.article-list' элемент в DOM. */
@@ -555,317 +561,376 @@ var postLoader = (function () {
         });
     }
 
-    function insertPostInDOM(article) {
-        articleModel.addArticle(article);
-        CONTENT_AREA.appendChild(loadPost(article));
+    function removePostFromDom(id) {
+        var post = document.getElementById(id.toString());
+        if (post) {
+            post.className = 'removed-item';
+            post.id = 'removed-item';
+            var contentStartPadding = 130, contentEndPadding = 330, coef = 0.7;
+            if (CONTENT_AREA.contains(document.querySelector(".login-window"))) {
+                contentStartPadding = 120;
+                contentEndPadding = 120;
+                coef = 0;
+            }
+            if (CONTENT_AREA.contains(document.querySelector(".detailed-post"))) {
+                contentStartPadding = 130;
+                contentEndPadding = 130;
+                coef = 0;
+            }
+            document.getElementById('removed-item').addEventListener('animationend', function (e) {
+                CONTENT_AREA.style.paddingTop = contentEndPadding + 'px';
+                CONTENT_AREA.removeChild(post);
+                articleModel.removeArticle(id);
+                var ANIMATION_TIME = 300;
+                var start = Date.now();
+                var timer = setInterval(function () {
+                    var timePassed = Date.now() - start;
+                    if (timePassed >= ANIMATION_TIME) {
+                        clearInterval(timer);
+                        CONTENT_AREA.style.paddingTop = contentStartPadding + 'px';
+                        return;
+                    }
+                    draw(timePassed);
+                }, 10);
+            });
+        }
+        function draw(timePassed) {
+            CONTENT_AREA.style.paddingTop = contentEndPadding - timePassed * coef + 'px';
+        }
+
+        articleModel.removeArticle(id);
+        // Holly fucking shit, 2.5 часа тыкался и заработало
+    }
+    function removePostsFromDom() {
+        COLUMN.innerHTML = '';
+        CONTENT_AREA.innerHTML = '';
+        document.querySelector(".column").appendChild(CONTENT_AREA);
+    }
+    function removeDetailedPostFromDom(id) {
+        var post = document.getElementById(id.toString());
+        if (post) {
+            post.className = 'det-removed-item';
+            post.id = 'det-removed-item';
+            var contentStartPadding = 130, contentEndPadding = 430, coef = 0.6;
+            document.getElementById('det-removed-item').addEventListener('animationend', function (e) {
+                CONTENT_AREA.style.paddingTop = contentEndPadding + 'px';
+                CONTENT_AREA.removeChild(post);
+                var ANIMATION_TIME = 500;
+                var start = Date.now();
+                var timer = setInterval(function () {
+                    var timePassed = Date.now() - start;
+                    if (timePassed >= ANIMATION_TIME) {
+                        clearInterval(timer);
+                        CONTENT_AREA.style.paddingTop = contentStartPadding + 'px';
+                        return;
+                    }
+                    draw(timePassed);
+                }, 10);
+            });
+        }
+        function draw(timePassed) {
+            CONTENT_AREA.style.paddingTop = contentEndPadding - timePassed * coef + 'px';
+        }
     }
 
+    function loadPost(article) {
+        var temp = POST_TEMPLATE.cloneNode(true);
+        temp.content.querySelector(".post").id = article.id;
+        temp.content.querySelector(".post-title").textContent = article.title;
+        temp.content.querySelector(".post-short-description").textContent = article.summary;
+        temp.content.querySelector(".post-date").textContent = formatDate(article.createdAt);
+        temp.content.querySelector(".post-author").textContent = article.author;
+        temp.content.querySelector(".image-cropper").lastElementChild.src = article.imageSrc;
+        temp.content.querySelector(".post-tags").innerHTML = article.tags;
 
 
-
-function removePostsFromDom() {
-    COLUMN.innerHTML = '';
-    CONTENT_AREA.innerHTML = '';
-    document.querySelector(".column").appendChild(CONTENT_AREA);
-}
-
-function removePostFromDom(id) {
-    var post = document.getElementById(id.toString());
-    if (post) {
-        post.className = 'removed-item';
-        post.id = 'removed-item';
-        var contentStartPadding = 130, contentEndPadding = 330, coef = 0.7;
-        if (CONTENT_AREA.contains(document.querySelector(".login-window"))) {
-            contentStartPadding = 120;
-            contentEndPadding = 120;
-            coef = 0;
+        var controlButtons = temp.content.querySelector(".control-buttons");
+        if (!user) {
+            if (controlButtons) {
+                temp.content.querySelector(".post").removeChild(controlButtons);
+            }
+            console.log('deleted');
         }
-        if (CONTENT_AREA.contains(document.querySelector(".detailed-post"))) {
-            contentStartPadding = 130;
-            contentEndPadding = 130;
-            coef = 0;
+        return temp.content.querySelector('.post').cloneNode(true);
+    }
+    function loadPosts(articles) {
+        return articles.map(function (article) {
+            return loadPost(article);
+        });
+    }
+    function loadUserElements(user) {
+        var addPostButton = document.querySelector(".header-row").querySelector(".add-button");
+        var addPostButtonTemplate = document.querySelector("#add-button").cloneNode(true);
+        if (user) {
+            document.querySelector(".user-info").lastElementChild.src = "images/userlogo.png";
+            if (!addPostButton) {
+                document.querySelector(".header-row").appendChild(addPostButtonTemplate.content.querySelector('.add-button').cloneNode(true));
+            }
+        } else {
+            document.querySelector(".user-info").lastElementChild.src = "images/notuserlogo.png";
+            if (addPostButton) {
+                document.querySelector(".header-row").removeChild(addPostButton);
+            }
         }
-        document.getElementById('removed-item').addEventListener('animationend', function (e) {
-            CONTENT_AREA.style.paddingTop = contentEndPadding + 'px';
-            CONTENT_AREA.removeChild(post);
-            articleModel.removeArticle(id);
+    }
+
+    function returnToMain() {
+        var removedContent = document.querySelector(".content").cloneNode(true);
+        removedContent.className = 'removed-content';
+        removedContent.id = 'removed-content';
+        document.querySelector(".column").removeChild(CONTENT_AREA);
+
+        removePostsFromDom();
+        renderPosts(0, articleModel.getArticlesSize());
+    }
+
+    function checkAuthInput() {
+        var inputUser = document.querySelector(".login-input").value;
+        var inputPass = document.querySelector(".pass-input").value;
+
+        if (checkLogin(inputUser, inputPass)) {
+            returnToMain();
+        } else {
+            insertError("Неправильный пользователь");
+        }
+    }
+    function checkLogin(log, pass) {
+        if (log === 'admin' && pass === 'admin') {
+            user = 'admin';
+            return true;
+        }
+        if (log === 'Brama' && pass === 'Brama') {
+            user = 'Brama';
+            return true;
+        }
+        return false;
+    }
+    function editPostInDom(id, article) {
+        var articleId = document.querySelector('.edit-post-id').innerHTML;
+        articleId = articleId.substr(3, articleId.length);
+        var newArticle = {
+            id: articleId,
+            title: document.querySelector(".edit-post-title").value,
+            summary: document.querySelector(".edit-post-short-description").value,
+            createdAt: new Date(),
+            author: document.querySelector(".edit-post-author").textContent,
+            tags: document.querySelector(".edit-post-tags").value.split(","),
+            content: document.querySelector(".edit-post-description").value,
+            imageSrc: document.querySelector(".edit-image-cropper").lastElementChild.src
+        };
+
+        console.log(articleId);
+        if(articleModel.getArticle(articleId)){
+            if (articleModel.editArticle(parseInt(articleId), newArticle)) {
+                document.querySelector('.edit-enter').textContent = "Изменено успешно!";
+                document.querySelector('.edit-enter').style.background = "#5188E8";
+                setTimeout(postLoader.returnToMain, 2000);
+            } else {
+                alert("Измененный пост не проходит модерацию на проверку!");
+            }
+        }else{
+            if(articleModel.addArticle(newArticle)){
+                document.querySelector('.edit-enter').textContent = "Добавлено успешно!";
+                document.querySelector('.edit-enter').style.background = "#5188E8";
+                setTimeout(postLoader.returnToMain, 2000);
+            }
+        }
+
+    }
+
+    function insertEditPost(article) {
+        //not remove all
+        var renderedArticle = EDIT_POST_TEMPLATE;
+        var removedContent = document.querySelector(".content").cloneNode(true);
+        removedContent.className = 'removed-content';
+        removedContent.id = 'removed-content';
+        document.querySelector(".column").removeChild(CONTENT_AREA);
+        document.querySelector(".column").appendChild(removedContent);
+        document.getElementById('removed-content').addEventListener('animationend', function (e) {
+            removePostsFromDom();
+            if (article) {
+                renderedArticle.content.querySelector(".edit-post").id = article.id;
+                renderedArticle.content.querySelector(".edit-post-title").value = article.title;
+                renderedArticle.content.querySelector(".edit-post-tags").value = article.tags;
+                renderedArticle.content.querySelector(".edit-image-cropper").lastElementChild.src = article.imageSrc;
+
+                renderedArticle.content.querySelector(".edit-post-id").textContent = 'ID-' + article.id;
+                renderedArticle.content.querySelector(".edit-post-author").textContent = article.author;
+                renderedArticle.content.querySelector(".edit-post-date").textContent = formatDate(article.createdAt);
+
+                renderedArticle.content.querySelector(".edit-post-short-description").textContent = article.summary;
+                renderedArticle.content.querySelector(".edit-post-description").textContent = article.content;
+                renderedArticle.content.querySelector(".edit-enter").textContent = "Изменить";
+            } else {
+                console.log(articleModel.getArticlesSize());
+                renderedArticle.content.querySelector(".edit-post").id = articleModel.getArticlesSize() + 1;
+                renderedArticle.content.querySelector(".edit-post-title").value = '';
+                renderedArticle.content.querySelector(".edit-post-tags").value = '';
+                renderedArticle.content.querySelector(".edit-image-cropper").lastElementChild.src = "images/userlogo.png";
+
+                renderedArticle.content.querySelector(".edit-post-id").textContent = 'ID-' + (articleModel.getArticlesSize() + 1);
+                renderedArticle.content.querySelector(".edit-post-author").textContent = user;
+                renderedArticle.content.querySelector(".edit-post-date").textContent = formatDate(new Date());
+
+                renderedArticle.content.querySelector(".edit-post-short-description").textContent = '';
+                renderedArticle.content.querySelector(".edit-post-description").textContent = '';
+                renderedArticle.content.querySelector(".edit-enter").textContent = "Добавить";
+                // adding new post
+            }
+            CONTENT_AREA.insertBefore(renderedArticle.content.querySelector(".edit-post").cloneNode(true), CONTENT_AREA.firstChild);
+            document.querySelector('.edit-enter').addEventListener('click', editPostInDom);
+        });
+    }
+    function insertError(errCode) {
+        var removedContent = document.querySelector(".content").cloneNode(true);
+        removedContent.className = 'removed-content';
+        removedContent.id = 'removed-content';
+        document.querySelector(".column").removeChild(CONTENT_AREA);
+        document.querySelector(".column").appendChild(removedContent);
+        document.getElementById('removed-content').addEventListener('animationend', function (e) {
+            removePostsFromDom();
+
+            var template = ERROR_TEMPLATE;
+            template.content.querySelector(".error-window-code").textContent = 'Код ошибки : ' + errCode;
+            CONTENT_AREA.insertBefore(template.content.querySelector(".error-window").cloneNode(true), CONTENT_AREA.firstChild);
+            document.querySelector('.error-window').addEventListener('click', returnToMain);
+        });
+    }
+    function insertLogin() {
+        var temp = LOGIN_TEMPLATE;
+        if (!CONTENT_AREA.contains(document.querySelector(".login-window"))) {
             var ANIMATION_TIME = 300;
             var start = Date.now();
             var timer = setInterval(function () {
                 var timePassed = Date.now() - start;
                 if (timePassed >= ANIMATION_TIME) {
                     clearInterval(timer);
-                    CONTENT_AREA.style.paddingTop = contentStartPadding + 'px';
+                    CONTENT_AREA.style.paddingTop = 120 + 'px';
+                    CONTENT_AREA.insertBefore(temp.content.querySelector(".login-window").cloneNode(true), CONTENT_AREA.firstChild);
+                    document.querySelector('.login-window-enter-button').addEventListener('click', checkAuthInput);
                     return;
                 }
                 draw(timePassed);
-            }, 10);
-        });
+            }, 25);
+        }
+        function draw(timePassed) {
+            CONTENT_AREA.style.paddingTop = timePassed * 2 + 'px';
+        }
     }
-    function draw(timePassed) {
-        CONTENT_AREA.style.paddingTop = contentEndPadding - timePassed * coef + 'px';
-    }
+    function insertDetailedInDOM(article) {
+        // fix --> авториз = !авториз
+        if (CONTENT_AREA.contains(document.getElementById(article.id))) {
+            var temp = DETAILED_POST_TEMPLATE;
+            temp.content.querySelector(".detailed-post").id = article.id + '999';
+            temp.content.querySelector(".detailed-post-title").textContent = article.title;
+            temp.content.querySelector(".detailed-post-description").textContent = article.content;
+            temp.content.querySelector(".detailed-post-date").textContent = formatDate(article.createdAt);
+            temp.content.querySelector(".detailed-post-author").textContent = article.author;
+            temp.content.querySelector(".detailed-image-cropper").lastElementChild.src = article.imageSrc;
+            temp.content.querySelector(".detailed-post-tags").innerHTML = article.tags;
 
-    articleModel.removeArticle(id);
-    // Holly fucking shit, 2.5 часа тыкался и заработало
-}
-function removeDetailedPostFromDom(id) {
-    var post = document.getElementById(id.toString());
-    if (post) {
-        post.className = 'det-removed-item';
-        post.id = 'det-removed-item';
-        var contentStartPadding = 130, contentEndPadding = 430, coef = 0.6;
-        document.getElementById('det-removed-item').addEventListener('animationend', function (e) {
-            CONTENT_AREA.style.paddingTop = contentEndPadding + 'px';
-            CONTENT_AREA.removeChild(post);
-            var ANIMATION_TIME = 500;
+            //если нет юзера - удаляем
+            if (!user) {
+                var controlButtons = temp.content.querySelector(".detailed-control-buttons");
+                var userInfo = document.querySelector(".user-info").lastElementChild.src = "images/notuserlogo.png";
+                var addPostButton = document.querySelector(".add-button");
+                if (controlButtons && addPostButton) {
+                    temp.content.querySelector(".detailed-post").removeChild(controlButtons);
+                    document.querySelector(".header-row").removeChild(addPostButton);
+                }
+                console.log('deleted');
+            }
+            var ANIMATION_TIME = 300;
             var start = Date.now();
             var timer = setInterval(function () {
                 var timePassed = Date.now() - start;
                 if (timePassed >= ANIMATION_TIME) {
                     clearInterval(timer);
-                    CONTENT_AREA.style.paddingTop = contentStartPadding + 'px';
+                    CONTENT_AREA.style.paddingTop = 130 + 'px';
+                    CONTENT_AREA.insertBefore(temp.content.querySelector('.detailed-post').cloneNode(true), CONTENT_AREA.firstChild);
                     return;
                 }
                 draw(timePassed);
-            }, 10);
-        });
-    }
-    function draw(timePassed) {
-        CONTENT_AREA.style.paddingTop = contentEndPadding - timePassed * coef + 'px';
-    }
-}
-
-
-function loadPosts(articles) {
-    return articles.map(function (article) {
-        return loadPost(article);
-    });
-}
-
-function loadPost(article) {
-    var temp = POST_TEMPLATE.cloneNode(true);
-    temp.content.querySelector(".post").id = article.id;
-    temp.content.querySelector(".post-title").textContent = article.title;
-    temp.content.querySelector(".post-short-description").textContent = article.summary;
-    temp.content.querySelector(".post-date").textContent = formatDate(article.createdAt);
-    temp.content.querySelector(".post-author").textContent = article.author;
-    temp.content.querySelector(".image-cropper").lastElementChild.src = article.imageSrc;
-    temp.content.querySelector(".post-tags").innerHTML = article.tags;
-
-    //если нет юзера - удаляем
-    console.log(user);
-
-    var addPostButton = document.querySelector(".add-button");
-    var controlButtons = temp.content.querySelector(".control-buttons");
-    if (!user) {
-        var userInfo = document.querySelector(".user-info").lastElementChild.src = "images/notuserlogo.png";
-        if (controlButtons ) {
-            temp.content.querySelector(".post").removeChild(controlButtons);
+            }, 25);
+            event.stopPropagation();
         }
-        if(addPostButton){
-            document.querySelector(".header-row").removeChild(addPostButton);
+        function draw(timePassed) {
+            CONTENT_AREA.style.paddingTop = timePassed * 1.5 + 'px';
         }
-        console.log('deleted');
-    }else{
-        document.querySelector(".user-info").lastElementChild.src = "images/userlogo.png";
+
     }
-    return temp.content.querySelector('.post').cloneNode(true);
-}
 
-function returnToMain() {
-    var removedContent = document.querySelector(".content").cloneNode(true);
-    removedContent.className = 'removed-content';
-    removedContent.id = 'removed-content';
-    document.querySelector(".column").removeChild(CONTENT_AREA);
-
-    removePostsFromDom();
-    renderPosts(0, articleModel.getArticlesSize());
-}
-
-function checkAuthInput() {
-    var inputUser = document.querySelector(".login-input").value;
-    var inputPass = document.querySelector(".pass-input").value;
-
-    if (checkLogin(inputUser, inputPass)) {
-        returnToMain();
-    } else {
-        insertError("Неправильный пользователь");
+    function formatDate(d) {
+        return d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + ' ' +
+            d.getUTCHours() + ':' + d.getMinutes();
     }
-}
 
-function checkLogin(log, pass) {
-    if (log === 'admin' && pass === 'admin') {
-        user = 'admin';
-        return true;
-    }
-    if (log === 'Brama' && pass === 'Brama') {
-        user = 'Brama';
-        return true;
-    }
-    return false;
-}
-
-function insertEditPost(article) {
-    //not remove all
-    var renderedArticle = EDIT_POST_TEMPLATE;
-    var removedContent = document.querySelector(".content").cloneNode(true);
-    removedContent.className = 'removed-content';
-    removedContent.id = 'removed-content';
-    document.querySelector(".column").removeChild(CONTENT_AREA);
-    document.querySelector(".column").appendChild(removedContent);
-    document.getElementById('removed-content').addEventListener('animationend', function (e) {
-        removePostsFromDom();
-        if (article) {
-            renderedArticle.content.querySelector(".edit-post").id = article.id;
-            renderedArticle.content.querySelector(".edit-post-title").value = article.title;
-            renderedArticle.content.querySelector(".edit-post-tags").value = article.tags;
-            renderedArticle.content.querySelector(".edit-image-cropper").lastElementChild.src = article.imageSrc;
-
-            renderedArticle.content.querySelector(".edit-post-id").textContent = 'ID-'+article.id;
-            renderedArticle.content.querySelector(".edit-post-author").textContent = article.author;
-            renderedArticle.content.querySelector(".edit-post-date").textContent = formatDate(article.createdAt);
-
-            renderedArticle.content.querySelector(".edit-post-short-description").textContent = article.summary;
-            renderedArticle.content.querySelector(".edit-post-description").textContent = article.content;
-        } else {
-            renderedArticle.content.querySelector(".edit-post").id = articleModel.getArticlesSize();
-            renderedArticle.content.querySelector(".edit-post-title").value = '';
-            renderedArticle.content.querySelector(".edit-post-tags").value = '';
-            renderedArticle.content.querySelector(".edit-image-cropper").lastElementChild.src = "images/notuserlogo.png";
-
-            renderedArticle.content.querySelector(".edit-post-id").textContent = '';
-            renderedArticle.content.querySelector(".edit-post-author").textContent = user;
-            renderedArticle.content.querySelector(".edit-post-date").textContent = formatDate(new Date());
-
-            renderedArticle.content.querySelector(".edit-post-short-description").textContent = '';
-            renderedArticle.content.querySelector(".edit-post-description").textContent = '';
-            // adding new post
-        }
-        CONTENT_AREA.insertBefore(renderedArticle.content.querySelector(".edit-post").cloneNode(true), CONTENT_AREA.firstChild);
-        document.querySelector('.edit-enter').addEventListener('click',editPostInDom);
-    });
-}
-
-function editPostInDom(id, article) {
-    var newArticle = {
-        title: document.querySelector(".edit-post-title").value,
-        summary: document.querySelector(".edit-post-description").value,
-        tags: document.querySelector(".edit-post-tags").value.split(","),
-        content: document.querySelector(".edit-post-description").value,
+    return {
+        init: init,
+        insertPostsInDOM: insertPostsInDOM,
+        removePostsFromDom: removePostsFromDom,
+        removePostFromDom: removePostFromDom,
+        removeDetailedPostFromDom: removeDetailedPostFromDom,
+        insertPostInDOM: insertPostInDOM,
+        insertLoginInDom: insertLogin,
+        insertErrorInDom: insertError,
+        insertEditInDom: insertEditPost,
+        insertDetailedPostInDom: insertDetailedInDOM,
+        editPostInDom: editPostInDom,
+        returnToMain: returnToMain
     };
-    var articleId = document.querySelector('.edit-post-id').innerHTML;
-    if(articleModel.editArticle(parseInt(articleId.substr(3,articleId.length)), newArticle)){
-        document.querySelector('.edit-enter').textContent = "Изменено успешно!";
-        document.querySelector('.edit-enter').style.background = "#5188E8";
-        setTimeout(postLoader.returnToMain,2000);
-    }else{
-        alert("Измененный пост не проходит модерацию на проверку!");
-    }
-    //renderPosts(0, 25);
-}
+}());
+var pagination = (function () {
+    var ITEMS_PER_СLICK = 10; // статей на 1-ой странице
+    var ITEMS_SHOWN = 10;
+    var total; // всего статей
+    var showMoreButton;
+    var showMoreCallback;
 
-function insertError(errCode) {
-    var removedContent = document.querySelector(".content").cloneNode(true);
-    removedContent.className = 'removed-content';
-    removedContent.id = 'removed-content';
-    document.querySelector(".column").removeChild(CONTENT_AREA);
-    document.querySelector(".column").appendChild(removedContent);
-    document.getElementById('removed-content').addEventListener('animationend', function (e) {
-        removePostsFromDom();
 
-        var template = ERROR_TEMPLATE;
-        template.content.querySelector(".error-window-code").textContent = 'Код ошибки : ' + errCode;
-        CONTENT_AREA.insertBefore(template.content.querySelector(".error-window").cloneNode(true), CONTENT_AREA.firstChild);
-        document.querySelector('.error-window').addEventListener('click', returnToMain);
-    });
-}
+    function init(_total, _showMoreCallback) {
+        total = _total;
+        showMoreCallback = _showMoreCallback;
+        showMoreButton = document.querySelector('.more-button');
+        showMoreButton.addEventListener('click', handleShowMoreClick);
 
-function insertLogin() {
-    var temp = LOGIN_TEMPLATE;
-    if (!CONTENT_AREA.contains(document.querySelector(".login-window"))) {
-        var ANIMATION_TIME = 300;
-        var start = Date.now();
-        var timer = setInterval(function () {
-            var timePassed = Date.now() - start;
-            if (timePassed >= ANIMATION_TIME) {
-                clearInterval(timer);
-                CONTENT_AREA.style.paddingTop = 120 + 'px';
-                CONTENT_AREA.insertBefore(temp.content.querySelector(".login-window").cloneNode(true), CONTENT_AREA.firstChild);
-                document.querySelector('.login-window-enter-button').addEventListener('click', checkAuthInput);
-                return;
-            }
-            draw(timePassed);
-        }, 25);
-    }
-    function draw(timePassed) {
-        CONTENT_AREA.style.paddingTop = timePassed * 2 + 'px';
-    }
-}
+        /* Не показывать кнопку если статей нет */
+        showOrHideMoreButton();
 
-function insertDetailedInDOM(article) {
-    // fix --> авториз = !авториз
-    if (CONTENT_AREA.contains(document.getElementById(article.id))) {
-        var temp = DETAILED_POST_TEMPLATE;
-        temp.content.querySelector(".detailed-post").id = article.id + '999';
-        temp.content.querySelector(".detailed-post-title").textContent = article.title;
-        temp.content.querySelector(".detailed-post-description").textContent = article.content;
-        temp.content.querySelector(".detailed-post-date").textContent = formatDate(article.createdAt);
-        temp.content.querySelector(".detailed-post-author").textContent = article.author;
-        temp.content.querySelector(".detailed-image-cropper").lastElementChild.src = article.imageSrc;
-        temp.content.querySelector(".detailed-post-tags").innerHTML = article.tags;
-
-        //если нет юзера - удаляем
-        if (!user) {
-            var controlButtons = temp.content.querySelector(".detailed-control-buttons");
-            var userInfo = document.querySelector(".user-info").lastElementChild.src = "images/notuserlogo.png";
-            var addPostButton = document.querySelector(".add-button");
-            if (controlButtons && addPostButton) {
-                temp.content.querySelector(".detailed-post").removeChild(controlButtons);
-                document.querySelector(".header-row").removeChild(addPostButton);
-            }
-            console.log('deleted');
-        }
-        var ANIMATION_TIME = 300;
-        var start = Date.now();
-        var timer = setInterval(function () {
-            var timePassed = Date.now() - start;
-            if (timePassed >= ANIMATION_TIME) {
-                clearInterval(timer);
-                CONTENT_AREA.style.paddingTop = 130 + 'px';
-                CONTENT_AREA.insertBefore(temp.content.querySelector('.detailed-post').cloneNode(true), CONTENT_AREA.firstChild);
-                return;
-            }
-            draw(timePassed);
-        }, 25);
-        event.stopPropagation();
-    }
-    function draw(timePassed) {
-        CONTENT_AREA.style.paddingTop = timePassed * 1.5 + 'px';
+        /* Вернуть skip, top для начальной отрисовки статей */
+        return getParams();
     }
 
-}
+    function handleShowMoreClick() {
+        var postsShown = nextPage();
+        showMoreCallback(postsShown.skip, postsShown.top);
+        console.log(ITEMS_SHOWN);
+    }
 
-function formatDate(d) {
-    return d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear() + ' ' +
-        d.getUTCHours() + ':' + d.getMinutes();
-}
+    function nextPage() {
+        ITEMS_SHOWN += ITEMS_PER_СLICK;
+        /* возможно, статей больше нет, спрятать кнопку */
+        showOrHideMoreButton();
+        return getParams();
+    }
 
-return {
-    init: init,
-    insertPostsInDOM: insertPostsInDOM,
-    removePostsFromDom: removePostsFromDom,
-    removePostFromDom: removePostFromDom,
-    removeDetailedPostFromDom: removeDetailedPostFromDom,
-    insertPostInDOM: insertPostInDOM,
-    insertLoginInDom: insertLogin,
-    insertErrorInDom: insertError,
-    insertEditInDom: insertEditPost,
-    insertDetailedPostInDom: insertDetailedInDOM,
-    editPostInDom: editPostInDom,
-    returnToMain: returnToMain
-};}()
-);
+    function getParams() {
+           return {
+               top: ITEMS_SHOWN,
+               skip: 0
+           };
+    }
+
+    function showOrHideMoreButton() {
+        showMoreButton.hidden = total <= ITEMS_SHOWN;
+    }
+
+    return {
+        init: init,
+        getParams: getParams
+    }
+
+}());
 
 function addEventListeners() {
     var headerRowElements = document.querySelector('.header-row')
@@ -943,9 +1008,10 @@ addEventListeners();
 function startApp() {
 
     postLoader.init();
-    //1
-    renderPosts(0, 25);
-    //2
+    pagination.init(articleModel.getArticlesSize(),function (skip, top) {
+        renderPosts(skip, top);
+    });
+    renderPosts(pagination.skip,pagination.top);
     /*
      postLoader.insertPostInDOM({
      id: "21",

@@ -27,7 +27,6 @@
         <div class="user-info">
             <img src="images/userlogo.png" alt="User logo">
         </div>
-        <a class="add-button" href="#" title="Добавить пост"><img src="images/add-button-icon.png"/></a>
         <a class="filter-button" href="#" title="Фильтр"><img src="images/filter-button-icon.png"/></a>
     </div>
 </header>
@@ -38,11 +37,11 @@
 
     </div>
 </div>
-<!--
+
 <div>
-    <a class="more-button" href="#" title="Ещё"><img src="images/down-button-icon.png"/></a>
+    <a class="more-button" title="Ещё"><img src="images/down-button-icon.png"/></a>
 </div>
--->
+
 <footer>
     <div class="footer-row">
         <div class="footer-logo">
@@ -125,7 +124,7 @@
             <textarea class="edit-post-description">Полное и детальное описание статьи будет здесь. </textarea>
         </div>
         <div class="edit-post-submit">
-            <button class="edit-enter" title="Изменить"><a href="#">Изменить</a></button>
+            <button class="edit-enter"><a href="#">Изменить</a></button>
         </div>
 
     </div>
@@ -154,7 +153,9 @@
         <button class="login-window-enter-button" title="Уже вхожу"><a href="#">Войти</a></button>
     </div>
 </template>
-
+<template id="add-button">
+    <a class="add-button" href="#" title="Добавить пост"><img src="images/add-button-icon.png"/></a>
+</template>
 </body>
 </html>
 
