@@ -311,6 +311,54 @@ body{
     text-decoration: none;
 }
 
+.filter{
+    animation: error-appear-animation 0.5s cubic-bezier(0.12,1.04, 0.78, 1) forwards;
+    width: 83%;
+    height: 80px;
+    text-align: center;
+    margin: 60px auto 25px;
+    border-radius: 12px;
+    background-color: #5188E8;
+}
+.filter > input{
+    width: 23%;
+    height: 40px;
+    align-content: center;
+    text-align: center;
+    margin-top: 20px;
+    border-radius: 6px;
+    border-style: none;
+    font-size: 20px;
+}
+.filter-input-title{
+    background-color: rgb(242, 248, 255)
+}
+.filter-input-author{
+    background-color: #1bffb4
+}
+.filter-button-date{
+    width: 23%;
+    height: 40px;
+    align-content: center;
+    margin-top: 20px;
+    font-size: 20px;
+    border-style: none;
+    border-radius: 6px;
+    color: #FFFFFF;
+    background-color: #e89587;
+}
+.filter-button-apply{
+    width: 4%;
+    height: 42px;
+    align-content: center;
+    margin-top: 20px;
+    font-size: 20px;
+    border-style: none;
+    border-radius: 6px;
+    color: #FFFFFF;
+    background-color: #6fe82b;
+}
+
 .login-window {
     animation: appear-animation 1s cubic-bezier(0.12,1.04, 0.78, 1) forwards;
     width: 75%;

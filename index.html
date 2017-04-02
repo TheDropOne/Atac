@@ -21,7 +21,7 @@
             <img src="images/logo.png" alt="User logo">
         </div>
         <div class="search-header">
-            <input type="text" placeholder="Поиск">
+            <input class="header-search-input" type="text" placeholder="Поиск">
             <button class="find-button" title="Найти"><a href="#">Найти</a></button>
         </div>
         <div class="user-info">
@@ -30,6 +30,7 @@
         <a class="filter-button" href="#" title="Фильтр"><img src="images/filter-button-icon.png"/></a>
     </div>
 </header>
+
 <div class="column">
     <div class="content">
 
@@ -155,6 +156,15 @@
 </template>
 <template id="add-button">
     <a class="add-button" href="#" title="Добавить пост"><img src="images/add-button-icon.png"/></a>
+</template>
+<template id="filter">
+    <div class="filter">
+        <input type="text" placeholder="Заголовок" class="filter-input-title">
+        <button class="filter-button-date" title="По дате"><a>Дата</a></button>
+        <input type="text" placeholder="Автор" class="filter-input-author">
+        <input type="text" placeholder="Теги" class="filter-input-tags">
+        <button class="filter-button-apply" title="ОК"><a>ОК</a></button>
+    </div>
 </template>
 </body>
 </html>

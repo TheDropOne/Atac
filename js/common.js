@@ -1,7 +1,30 @@
 'use strict';
 
-var user = "fdf";
+var user;
+class FilterConfig {
+    constructor(byName, byDate, byAuthor, byTags) {
+        this._byName = byName;
+        this._byDate = byDate;
+        this._byAuthor = byAuthor;
+        this._byTags = byTags;
+    }
 
+    byName() {
+        return this._byName;
+    }
+
+    byDate() {
+        return this._byDate;
+    }
+
+    byAuthor() {
+        return this._byAuthor;
+    }
+
+    byTags() {
+        return this._byTags;
+    }
+}
 var articleModel = (function () {
     var tags = ["MWC 2017", "Гаджеты", "Смартфоны", "Выставки", "Дизайн"];
     var articles = [
@@ -246,30 +269,6 @@ var articleModel = (function () {
                 "Дизайн"]
         }];
 
-    class FilterConfig {
-        constructor(byName, byDate, byAuthor, byTags) {
-            this._byName = byName;
-            this._byDate = byDate;
-            this._byAuthor = byAuthor;
-            this._byTags = byTags;
-        }
-
-        byName() {
-            return this._byName;
-        }
-
-        byDate() {
-            return this._byDate;
-        }
-
-        byAuthor() {
-            return this._byAuthor;
-        }
-
-        byTags() {
-            return this._byTags;
-        }
-    }
     function clone(obj) {
         if (null == obj || "object" != typeof obj) return obj;
         var copy = obj.constructor();
@@ -405,6 +404,7 @@ var articleModel = (function () {
             }
             articles.push(article);
             console.log('Article successfully added');
+            fillArticlesStorage();
             return true;
         } catch (exception) {
             console.log('Article not added');
@@ -467,6 +467,7 @@ var articleModel = (function () {
         }
         articles[index] = tempPost;
         console.log("Post successfully edited");
+        fillArticlesStorage();
         return true;
     }
 
@@ -475,6 +476,7 @@ var articleModel = (function () {
             if (articles[i] !== null && articles[i].id == id) {
                 articles.splice(i, 1);
                 console.log("Post successfully removed");
+                fillArticlesStorage();
                 return true;
             }
         }
@@ -512,6 +514,25 @@ var articleModel = (function () {
         return articles.length;
     }
 
+    function fillArticlesStorage() {
+        localStorage.clear('articlesKey');
+        localStorage.setItem('articlesKey', JSON.stringify(articles));
+    }
+
+    var articlesData = JSON.parse(localStorage.getItem('articlesKey'));
+    if (!articlesData)
+        fillArticlesStorage();
+    else {
+        articles = articlesData;
+        articles.forEach(function (currentElement) {
+            currentElement.createdAt = new Date(currentElement.createdAt);
+        });
+    }
+
+    window.beforeunload = function () {
+        localStorage.setItem('articlesKey', JSON.stringify(articles));
+    };
+
     return {
         getArticle: getArticle,
         getArticles: getArticles,
@@ -534,6 +555,7 @@ var postLoader = (function () {
     var EDIT_POST_TEMPLATE;
     var ERROR_TEMPLATE;
     var LOGIN_TEMPLATE;
+    var FILTER_TEMPLATE;
 
     function init() {
         COLUMN = document.querySelector(".column");
@@ -543,6 +565,7 @@ var postLoader = (function () {
         EDIT_POST_TEMPLATE = document.querySelector('#edit-post-template');
         ERROR_TEMPLATE = document.querySelector('#error-window-template');
         LOGIN_TEMPLATE = document.querySelector('#login-window-template');
+        FILTER_TEMPLATE = document.querySelector('#filter');
     }
 
     function insertPostInDOM(article) {
@@ -674,16 +697,35 @@ var postLoader = (function () {
         }
     }
 
-    function returnToMain() {
+    function returnToMain(filterConfig) {
         var removedContent = document.querySelector(".content").cloneNode(true);
         removedContent.className = 'removed-content';
         removedContent.id = 'removed-content';
         document.querySelector(".column").removeChild(CONTENT_AREA);
 
         removePostsFromDom();
-        renderPosts(0, articleModel.getArticlesSize());
+        renderPosts(0, articleModel.getArticlesSize(),filterConfig);
+    }
+    function searchResult() {
+        var title = document.querySelector(".header-search-input").value || null;
+        var filterConfig = new FilterConfig(title);
+        returnToMain(filterConfig);
     }
 
+    function applyFilter() {
+        var title,date = null,author,tags;
+        title = document.querySelector(".filter-input-title").value || null;
+        author = document.querySelector(".filter-input-author").value || null;
+        tags = document.querySelector(".filter-input-tags").value.split(",");
+        if (!tags.length) {
+            tags = null;
+        }
+        if (document.querySelector(".filter-button-date").textContent !== 'Дата') {
+            date = document.querySelector(".filter-button-date").textContent;
+        }
+        var filterConfig = new FilterConfig(title,date,author,tags);
+        returnToMain(filterConfig);
+    }
     function checkAuthInput() {
         var inputUser = document.querySelector(".login-input").value;
         var inputPass = document.querySelector(".pass-input").value;
@@ -796,6 +838,13 @@ var postLoader = (function () {
             document.querySelector('.error-window').addEventListener('click', returnToMain);
         });
     }
+    function insertFilter() {
+        if (!CONTENT_AREA.contains(document.querySelector(".filter"))) {
+            var temp = FILTER_TEMPLATE;
+            CONTENT_AREA.insertBefore(temp.content.querySelector(".filter").cloneNode(true), CONTENT_AREA.firstChild);
+            document.querySelector('.filter-button-apply').addEventListener('click', applyFilter);
+        }
+    }
     function insertLogin() {
         var temp = LOGIN_TEMPLATE;
         if (!CONTENT_AREA.contains(document.querySelector(".login-window"))) {
@@ -874,23 +923,28 @@ var postLoader = (function () {
         insertPostInDOM: insertPostInDOM,
         insertLoginInDom: insertLogin,
         insertErrorInDom: insertError,
+        insertFilterInDom: insertFilter,
         insertEditInDom: insertEditPost,
         insertDetailedPostInDom: insertDetailedInDOM,
         editPostInDom: editPostInDom,
+        searchResult:searchResult,
         returnToMain: returnToMain
     };
 }());
+
 var pagination = (function () {
     var ITEMS_PER_СLICK = 10; // статей на 1-ой странице
     var ITEMS_SHOWN = 10;
+    var filterConfig;
     var total; // всего статей
     var showMoreButton;
     var showMoreCallback;
 
 
-    function init(_total, _showMoreCallback) {
+    function init(_total, _showMoreCallback, _filterConfig) {
         total = _total;
         showMoreCallback = _showMoreCallback;
+        _filterConfig = filterConfig;
         showMoreButton = document.querySelector('.more-button');
         showMoreButton.addEventListener('click', handleShowMoreClick);
 
@@ -903,7 +957,7 @@ var pagination = (function () {
 
     function handleShowMoreClick() {
         var postsShown = nextPage();
-        showMoreCallback(postsShown.skip, postsShown.top);
+        showMoreCallback(postsShown.skip, postsShown.top,filterConfig);
         console.log(ITEMS_SHOWN);
     }
 
@@ -917,7 +971,8 @@ var pagination = (function () {
     function getParams() {
            return {
                top: ITEMS_SHOWN,
-               skip: 0
+               skip: 0,
+               filterConfig: filterConfig
            };
     }
 
@@ -950,7 +1005,8 @@ function eventHeader(event) {
             postLoader.returnToMain();
             break;
         case 'find-button':
-            // fix -->  поиск
+            postLoader.returnToMain();
+            postLoader.searchResult();
             break;
         case 'user-info':
             // fix --> авториз = !авториз
@@ -961,7 +1017,8 @@ function eventHeader(event) {
             break;
         case 'filter-button':
             // fix --> выезд фильтра справа и заезд обратно
-            postLoader.insertErrorInDom("Sorry no filter yet");
+            postLoader.returnToMain();
+            postLoader.insertFilterInDom();
             break;
     }
 }
@@ -1008,8 +1065,8 @@ addEventListeners();
 function startApp() {
 
     postLoader.init();
-    pagination.init(articleModel.getArticlesSize(),function (skip, top) {
-        renderPosts(skip, top);
+    pagination.init(articleModel.getArticlesSize(),function (skip, top,filterConfig) {
+        renderPosts(skip, top,filterConfig);
     });
     renderPosts(pagination.skip,pagination.top);
     /*
@@ -1047,9 +1104,9 @@ function startApp() {
      */
 }
 
-function renderPosts(skip, top) {
+function renderPosts(skip, top,filterConfig) {
     postLoader.removePostsFromDom();
-    var posts = articleModel.getArticles(skip, top);
+    var posts = articleModel.getArticles(skip, top,filterConfig);
     console.log(user);
     postLoader.insertPostsInDOM(posts);
 }
