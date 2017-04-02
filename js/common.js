@@ -672,7 +672,6 @@ var postLoader = (function () {
             if (controlButtons) {
                 temp.content.querySelector(".post").removeChild(controlButtons);
             }
-            console.log('deleted');
         }
         return temp.content.querySelector('.post').cloneNode(true);
     }
@@ -1107,7 +1106,6 @@ function startApp() {
 function renderPosts(skip, top,filterConfig) {
     postLoader.removePostsFromDom();
     var posts = articleModel.getArticles(skip, top,filterConfig);
-    console.log(user);
     postLoader.insertPostsInDOM(posts);
 }
 
