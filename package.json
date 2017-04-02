@@ -1,0 +1,13 @@
+{
+  "name": "ATAC",
+  "version": "1.7",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "BRAMA",
+  "license": "MIT license",
+  "dependencies": {
+    "express": "^4.15.2"
+  }
+}
