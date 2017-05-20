@@ -27,250 +27,14 @@ class FilterConfig {
 }
 var articleModel = (function () {
     var tags = ["MWC 2017", "Гаджеты", "Смартфоны", "Выставки", "Дизайн"];
-    var articles = [
-        {
-            id: "1",
-            title: "MWC 2017: Samsung показала, как должны выглядеть современные компьютеры",
-            summary: "В «нулевой» день выставки MWC 2017 компания Samsung провела большую пресс-конференцию, на которой показала свое видение современных компьютеров – это легкие и мощные планшеты с клавиатурами и стилусами.",
-            createdAt: new Date('2017-02-27T01:34:00'),
-            author: "Brama",
-            content: "В «нулевой» день выставки MWC 2017 компания Samsung провела большуюпресс-конференцию, на которой показала свое видение современных компьютеров – это легкие и мощные планшеты с клавиатурами и стилусами.",
-            imageSrc: "images/1.jpg",
-            tags: ["MWC 2017",
-                "Гаджеты",
-                "Wireless"]
-        },
-        {
-            id: "2",
-            title: "Путин и Назарбаев вместе покатались на лыжах",
-            summary: "Президенты России и Казахстана Владимир Путин и Нурсултан Назарбаев вместе покатались на горнолыжном курорте неподалеку от Алма-Аты.",
-            createdAt: new Date('2017-02-26T23:26:00'),
-            author: "Brama",
-            content: "Президенты России и Казахстана Владимир Путин и Нурсултан Назарбаев вместе покатались на горнолыжном курорте неподалеку от Алма-Аты.",
-            imageSrc: "images/2.jpg",
-            tags: ["Досуш",
-                "Хобби",
-                "Президент"]
-        },
-        {
-            id: "3",
-            title: "Брат Ким Чен Ына умер в муках в течение 15-20 минут",
-            summary: "Как заявил министр здравоохранения Малайзии Субраманьям Сатхасивам, брат лидера Северной Кореи Ким Чон Нам был отравлен большой дозой нервно-паралитического токсина VX и умер в муках в течение 15−20 минут.",
-            createdAt: new Date('2017-02-26T23:17:00'),
-            author: "Brama",
-            content: "Как заявил министр здравоохранения Малайзии Субраманьям Сатхасивам, брат лидера Северной Кореи Ким Чон Нам был отравлен большой дозой нервно-паралитического токсина VX и умер в муках в течение 15−20 минут.",
-            imageSrc: "images/3.jpg",
-            tags: ["Проишествия",
-                "ООН"]
-        },
-        {
-            id: "4",
-            title: "Как под Минском иглу строили",
-            summary: "На последние выходные зимы недалеко от Минска планировалось проведение иглу-фэста, но погода не благоволила энтузиастам. Потому они собрались на Масленицу и заодно построили один снежный домик",
-            createdAt: new Date('2017-02-26T23:09:00'),
-            author: "Brama",
-            content: "На последние выходные зимы недалеко от Минска планировалось проведение иглу-фэста, но погода не благоволила энтузиастам. Потому они собрались на Масленицу и заодно построили один снежный домик",
-            imageSrc: "images/4.jpg",
-            tags: ["Позитив",
-                "Беларусь"]
-        },
-        {
-            id: "5",
-            title: "Возвращение легенды: представлены новые смартфоны под брендом Nokia",
-            summary: "На выставке MWC 2017 в Барселоне компания HMD Global, которая  на выпуск смартфонов  Nokia, представила новые Android-смартфоны разных ценовыхкатегорий — Nokia 3, Nokia 5 и Nokia 6.",
-            createdAt: new Date('2017-02-26T20:31:00'),
-            author: "Brama",
-            content: "Nokia 3 — самый бюджетный аппарат из всей линейки, он стоит от 147 долларов США.Смартфон получил металлический корпус с задней панелью из поликарбоната, 5,2-дюймовый экран с разрешением 1280 на 720 пикселей, процессор MTK 6737, 2 ГБ оперативной и 16 ГБ встроенной памяти, а также фронтальную и основную камеры на 8 Мп. Емкость батареи — 2650 мАч.",
-            imageSrc: "images/10.jpg",
-            tags: ["MWC 2017",
-                "Гаджеты",
-                "Смартфоны",
-                "Выставки",
-                "Дизайн"]
-        },
-        {
-            id: "6",
-            title: "MWC 2017: Samsung показала, как должны выглядеть современные компьютеры",
-            summary: "В «нулевой» день выставки MWC 2017 компания Samsung провела большую пресс-конференцию, на которой показала свое видение современных компьютеров – это легкие и мощные планшеты с клавиатурами и стилусами.",
-            createdAt: new Date('2017-02-27T01:34:00'),
-            author: "Brama",
-            content: "В «нулевой» день выставки MWC 2017 компания Samsung провела большуюпресс-конференцию, на которой показала свое видение современных компьютеров – это легкие и мощные планшеты с клавиатурами и стилусами.",
-            imageSrc: "images/1.jpg",
-            tags: ["MWC 2017",
-                "Гаджеты",
-                "Wireless"]
-        },
-        {
-            id: "7",
-            title: "Путин и Назарбаев вместе покатались на лыжах",
-            summary: "Президенты России и Казахстана Владимир Путин и Нурсултан Назарбаев вместе покатались на горнолыжном курорте неподалеку от Алма-Аты.",
-            createdAt: new Date('2017-02-26T23:26:00'),
-            author: "Brama",
-            content: "Президенты России и Казахстана Владимир Путин и Нурсултан Назарбаев вместе покатались на горнолыжном курорте неподалеку от Алма-Аты.",
-            imageSrc: "images/2.jpg",
-            tags: ["Досуш",
-                "Хобби",
-                "Президент"]
-        },
-        {
-            id: "8",
-            title: "Брат Ким Чен Ына умер в муках в течение 15-20 минут",
-            summary: "Как заявил министр здравоохранения Малайзии Субраманьям Сатхасивам, брат лидера Северной Кореи Ким Чон Нам был отравлен большой дозой нервно-паралитического токсина VX и умер в муках в течение 15−20 минут.",
-            createdAt: new Date('2017-02-26T23:17:00'),
-            author: "Brama",
-            content: "Как заявил министр здравоохранения Малайзии Субраманьям Сатхасивам, брат лидера Северной Кореи Ким Чон Нам был отравлен большой дозой нервно-паралитического токсина VX и умер в муках в течение 15−20 минут.",
-            imageSrc: "images/3.jpg",
-            tags: ["Проишествия",
-                "ООН"]
-        },
-        {
-            id: "9",
-            title: "Как под Минском иглу строили",
-            summary: "На последние выходные зимы недалеко от Минска планировалось проведение иглу-фэста, но погода не благоволила энтузиастам. Потому они собрались на Масленицу и заодно построили один снежный домик",
-            createdAt: new Date('2017-02-26T23:09:00'),
-            author: "Brama",
-            content: "На последние выходные зимы недалеко от Минска планировалось проведение иглу-фэста, но погода не благоволила энтузиастам. Потому они собрались на Масленицу и заодно построили один снежный домик",
-            imageSrc: "images/4.jpg",
-            tags: ["Позитив",
-                "Беларусь"]
-        },
-        {
-            id: "10",
-            title: "Возвращение легенды: представлены новые смартфоны под брендом Nokia",
-            summary: "На выставке MWC 2017 в Барселоне компания HMD Global, которая  на выпуск смартфонов  Nokia, представила новые Android-смартфоны разных ценовыхкатегорий — Nokia 3, Nokia 5 и Nokia 6.",
-            createdAt: new Date('2017-02-26T20:31:00'),
-            author: "Brama",
-            content: "Nokia 3 — самый бюджетный аппарат из всей линейки, он стоит от 147 долларов США.Смартфон получил металлический корпус с задней панелью из поликарбоната, 5,2-дюймовый экран с разрешением 1280 на 720 пикселей, процессор MTK 6737, 2 ГБ оперативной и 16 ГБ встроенной памяти, а также фронтальную и основную камеры на 8 Мп. Емкость батареи — 2650 мАч.",
-            imageSrc: "images/10.jpg",
-            tags: ["MWC 2017",
-                "Гаджеты",
-                "Смартфоны",
-                "Выставки",
-                "Дизайн"]
-        },
-        {
-            id: "11",
-            title: "MWC 2017: Samsung показала, как должны выглядеть современные компьютеры",
-            summary: "В «нулевой» день выставки MWC 2017 компания Samsung провела большую пресс-конференцию, на которой показала свое видение современных компьютеров – это легкие и мощные планшеты с клавиатурами и стилусами.",
-            createdAt: new Date('2017-02-27T01:34:00'),
-            author: "Brama",
-            content: "В «нулевой» день выставки MWC 2017 компания Samsung провела большуюпресс-конференцию, на которой показала свое видение современных компьютеров – это легкие и мощные планшеты с клавиатурами и стилусами.",
-            imageSrc: "images/1.jpg",
-            tags: ["MWC 2017",
-                "Гаджеты",
-                "Wireless"]
-        },
-        {
-            id: "12",
-            title: "Путин и Назарбаев вместе покатались на лыжах",
-            summary: "Президенты России и Казахстана Владимир Путин и Нурсултан Назарбаев вместе покатались на горнолыжном курорте неподалеку от Алма-Аты.",
-            createdAt: new Date('2017-02-26T23:26:00'),
-            author: "Brama",
-            content: "Президенты России и Казахстана Владимир Путин и Нурсултан Назарбаев вместе покатались на горнолыжном курорте неподалеку от Алма-Аты.",
-            imageSrc: "images/2.jpg",
-            tags: ["Досуш",
-                "Хобби",
-                "Президент"]
-        },
-        {
-            id: "13",
-            title: "Брат Ким Чен Ына умер в муках в течение 15-20 минут",
-            summary: "Как заявил министр здравоохранения Малайзии Субраманьям Сатхасивам, брат лидера Северной Кореи Ким Чон Нам был отравлен большой дозой нервно-паралитического токсина VX и умер в муках в течение 15−20 минут.",
-            createdAt: new Date('2017-02-26T23:17:00'),
-            author: "Brama",
-            content: "Как заявил министр здравоохранения Малайзии Субраманьям Сатхасивам, брат лидера Северной Кореи Ким Чон Нам был отравлен большой дозой нервно-паралитического токсина VX и умер в муках в течение 15−20 минут.",
-            imageSrc: "images/3.jpg",
-            tags: ["Проишествия",
-                "ООН"]
-        },
-        {
-            id: "14",
-            title: "Как под Минском иглу строили",
-            summary: "На последние выходные зимы недалеко от Минска планировалось проведение иглу-фэста, но погода не благоволила энтузиастам. Потому они собрались на Масленицу и заодно построили один снежный домик",
-            createdAt: new Date('2017-02-26T23:09:00'),
-            author: "Brama",
-            content: "На последние выходные зимы недалеко от Минска планировалось проведение иглу-фэста, но погода не благоволила энтузиастам. Потому они собрались на Масленицу и заодно построили один снежный домик",
-            imageSrc: "images/4.jpg",
-            tags: ["Позитив",
-                "Беларусь"]
-        },
-        {
-            id: "15",
-            title: "Возвращение легенды: представлены новые смартфоны под брендом Nokia",
-            summary: "На выставке MWC 2017 в Барселоне компания HMD Global, которая  на выпуск смартфонов  Nokia, представила новые Android-смартфоны разных ценовыхкатегорий — Nokia 3, Nokia 5 и Nokia 6.",
-            createdAt: new Date('2017-02-26T20:31:00'),
-            author: "Brama",
-            content: "Nokia 3 — самый бюджетный аппарат из всей линейки, он стоит от 147 долларов США.Смартфон получил металлический корпус с задней панелью из поликарбоната, 5,2-дюймовый экран с разрешением 1280 на 720 пикселей, процессор MTK 6737, 2 ГБ оперативной и 16 ГБ встроенной памяти, а также фронтальную и основную камеры на 8 Мп. Емкость батареи — 2650 мАч.",
-            imageSrc: "images/10.jpg",
-            tags: ["MWC 2017",
-                "Гаджеты",
-                "Смартфоны",
-                "Выставки",
-                "Дизайн"]
-        },
-        {
-            id: "16",
-            title: "MWC 2017: Samsung показала, как должны выглядеть современные компьютеры",
-            summary: "В «нулевой» день выставки MWC 2017 компания Samsung провела большую пресс-конференцию, на которой показала свое видение современных компьютеров – это легкие и мощные планшеты с клавиатурами и стилусами.",
-            createdAt: new Date('2017-02-27T01:34:00'),
-            author: "Brama",
-            content: "В «нулевой» день выставки MWC 2017 компания Samsung провела большуюпресс-конференцию, на которой показала свое видение современных компьютеров – это легкие и мощные планшеты с клавиатурами и стилусами.",
-            imageSrc: "images/1.jpg",
-            tags: ["MWC 2017",
-                "Гаджеты",
-                "Wireless"]
-        },
-        {
-            id: "17",
-            title: "Путин и Назарбаев вместе покатались на лыжах",
-            summary: "Президенты России и Казахстана Владимир Путин и Нурсултан Назарбаев вместе покатались на горнолыжном курорте неподалеку от Алма-Аты.",
-            createdAt: new Date('2017-02-26T23:26:00'),
-            author: "Brama",
-            content: "Президенты России и Казахстана Владимир Путин и Нурсултан Назарбаев вместе покатались на горнолыжном курорте неподалеку от Алма-Аты.",
-            imageSrc: "images/2.jpg",
-            tags: ["Досуш",
-                "Хобби",
-                "Президент"]
-        },
-        {
-            id: "18",
-            title: "Брат Ким Чен Ына умер в муках в течение 15-20 минут",
-            summary: "Как заявил министр здравоохранения Малайзии Субраманьям Сатхасивам, брат лидера Северной Кореи Ким Чон Нам был отравлен большой дозой нервно-паралитического токсина VX и умер в муках в течение 15−20 минут.",
-            createdAt: new Date('2017-02-26T23:17:00'),
-            author: "Brama",
-            content: "Как заявил министр здравоохранения Малайзии Субраманьям Сатхасивам, брат лидера Северной Кореи Ким Чон Нам был отравлен большой дозой нервно-паралитического токсина VX и умер в муках в течение 15−20 минут.",
-            imageSrc: "images/3.jpg",
-            tags: ["Проишествия",
-                "ООН"]
-        },
-        {
-            id: "19",
-            title: "Как под Минском иглу строили",
-            summary: "На последние выходные зимы недалеко от Минска планировалось проведение иглу-фэста, но погода не благоволила энтузиастам. Потому они собрались на Масленицу и заодно построили один снежный домик",
-            createdAt: new Date('2017-02-26T23:09:00'),
-            author: "Brama",
-            content: "На последние выходные зимы недалеко от Минска планировалось проведение иглу-фэста, но погода не благоволила энтузиастам. Потому они собрались на Масленицу и заодно построили один снежный домик",
-            imageSrc: "images/4.jpg",
-            tags: ["Позитив",
-                "Беларусь"]
-        },
-        {
-            id: "20",
-            title: "Возвращение легенды: представлены новые смартфоны под брендом Nokia",
-            summary: "На выставке MWC 2017 в Барселоне компания HMD Global, которая  на выпуск смартфонов  Nokia, представила новые Android-смартфоны разных ценовыхкатегорий — Nokia 3, Nokia 5 и Nokia 6.",
-            createdAt: new Date('2017-02-26T20:31:00'),
-            author: "Brama",
-            content: "Nokia 3 — самый бюджетный аппарат из всей линейки, он стоит от 147 долларов США.Смартфон получил металлический корпус с задней панелью из поликарбоната, 5,2-дюймовый экран с разрешением 1280 на 720 пикселей, процессор MTK 6737, 2 ГБ оперативной и 16 ГБ встроенной памяти, а также фронтальную и основную камеры на 8 Мп. Емкость батареи — 2650 мАч.",
-            imageSrc: "images/10.jpg",
-            tags: ["MWC 2017",
-                "Гаджеты",
-                "Смартфоны",
-                "Выставки",
-                "Дизайн"]
-        }];
+    var articles = requestHandler.getArticles().slice();
+
+    logArray(articles);
 
     function clone(obj) {
-        if (null == obj || "object" != typeof obj) return obj;
+        if (!obj || "object" != typeof obj) {
+            return obj;
+        }
         var copy = obj.constructor();
         for (var attr in obj) {
             if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
@@ -279,16 +43,7 @@ var articleModel = (function () {
     }
 
     function getArticle(id) {
-        if (articles.length != 0) {
-            for (var i = 0; i < articles.length; i++) {
-                if (articles[i].id && (articles[i].id == id)) {
-                    console.log('Post returned');
-                    return articles[i];
-                }
-            }
-        }
-        console.log('Post with that id doesn\'t exist');
-        return null;
+        return requestHandler.getArticle(id);
     }
 
     function getArticles(skip, top, filterConfig) {
@@ -339,7 +94,7 @@ var articleModel = (function () {
     }
 
     function validateArticle(article) {
-        if (article == null || article === undefined) {
+        if (!article) {
             console.log('Invalid article');
             return false;
         }
@@ -402,9 +157,10 @@ var articleModel = (function () {
                 console.log('Article not validated');
                 return false;
             }
-            articles.push(article);
+            article.id = article.id.toString();
+            requestHandler.addArticle(article);
+            articles = requestHandler.getArticles();
             console.log('Article successfully added');
-            fillArticlesStorage();
             return true;
         } catch (exception) {
             console.log('Article not added');
@@ -412,77 +168,72 @@ var articleModel = (function () {
             return false;
         }
     }
-
     function editArticle(id, article) {
-        var index = 0;
-        var tempPost = {
-            id: "-1",
-            title: "-1",
-            summary: "-1",
-            createdAt: new Date('2017-02-26T20:30:00'),
-            author: "-1",
-            content: "-1.",
-            imageSrc: "-1",
-            tags: []
-        };
+        const currentArticle = getArticle(id);
+        const articleCopy = clone(currentArticle);
+        let isEdited = true;
+        removeArticle(currentArticle.id);
+        Object.keys(article).forEach((key) => {
+            if (Object.prototype.hasOwnProperty.call(articleCopy, key)) {
+                articleCopy[key] = article[key];
+            }
+        });
+        if (!validateArticle(articleCopy)) {
+            isEdited = false;
+            requestHandler.addArticle(currentArticle);
+        } else {
+            articleCopy.id = articleCopy.id.toString();
+            requestHandler.addArticle(articleCopy);
+        }
+        articles = requestHandler.getArticles();
+        alert(isEdited);
+        return isEdited;
+    }
+    /*
+    function editArticle(id, article) {
         if (!id) {
             console.log("ID is null or undefined");
             return false;
         }
-        for (var i = 0; i < articles.length; i++) {
-            if (articles[i].id && (articles[i].id == id)) {
-                tempPost = clone(articles[i]);
-                index = i;
-                break;
+
+        var currentArticle = getArticle(id);
+        var articleCopy = clone(currentArticle);
+        var index = 0;
+
+        removeArticle(currentArticle.id);
+
+        for (var key in articles) {
+            if (articleCopy.hasOwnProperty(key)) {
+                articleCopy[key] = article[key];
             }
         }
-        if (!article) {
-            console.log("Article is null or undefined");
-            return false;
-        }
-        if (!tempPost) {
-            console.log("Post with that id doesn't exist");
-            return false;
-        }
-        if (article.title) {
-            tempPost.title = article.title;
-        }
-        if (article.summary) {
-            tempPost.summary = article.summary;
-        }
-        if (article.content) {
-            tempPost.content = article.content;
-        }
-        if (article.imageSrc) {
-            tempPost.imageSrc = article.imageSrc;
-        }
-        if (article.tags) {
-            tempPost.tags = article.tags;
-        }
-        articles[index] = null;
-        if (!validateArticle(tempPost)) {
+
+        if (!validateArticle(articleCopy)) {
             console.log("Post not validated");
-            articles[index] = tempPost;
+            requestHandler.addArticle(currentArticle);
             return false;
         }
-        articles[index] = tempPost;
+        articleCopy.id = articleCopy.id.toString();
+        addArticle(articleCopy);
+
         console.log("Post successfully edited");
-        fillArticlesStorage();
+        console.log(articles.length);
+        return true;
+    }
+*/
+
+    function removeArticle(id) {
+        var articleToDelete = requestHandler.getArticle(id);
+        if (!articleToDelete) {
+            return false;
+        }
+
+        requestHandler.deleteArticle(id);
+        articles = requestHandler.getArticles().slice();
+        console.log("Post successfully removed");
         return true;
     }
 
-    function removeArticle(id) {
-        for (var i = 0; i < articles.length; i++) {
-            if (articles[i] !== null && articles[i].id == id) {
-                articles.splice(i, 1);
-                console.log("Post successfully removed");
-                fillArticlesStorage();
-                return true;
-            }
-        }
-        console.log('Post with that id not exist');
-        return false;
-    }
 
     function addTag(tag) {
         if (tags.indexOf(tag) == -1) {
@@ -514,24 +265,8 @@ var articleModel = (function () {
         return articles.length;
     }
 
-    function fillArticlesStorage() {
-        localStorage.clear('articlesKey');
-        localStorage.setItem('articlesKey', JSON.stringify(articles));
-    }
 
-    var articlesData = JSON.parse(localStorage.getItem('articlesKey'));
-    if (!articlesData)
-        fillArticlesStorage();
-    else {
-        articles = articlesData;
-        articles.forEach(function (currentElement) {
-            currentElement.createdAt = new Date(currentElement.createdAt);
-        });
-    }
-
-    window.beforeunload = function () {
-        localStorage.setItem('articlesKey', JSON.stringify(articles));
-    };
+// here localstorage used to be, but I removed it.
 
     return {
         getArticle: getArticle,
@@ -572,6 +307,7 @@ var postLoader = (function () {
         articleModel.addArticle(article);
         CONTENT_AREA.appendChild(loadPost(article));
     }
+
     function insertPostsInDOM(articles) {
         //Пользователь
         loadUserElements(user);
@@ -624,11 +360,13 @@ var postLoader = (function () {
         articleModel.removeArticle(id);
         // Holly fucking shit, 2.5 часа тыкался и заработало
     }
+
     function removePostsFromDom() {
         COLUMN.innerHTML = '';
         CONTENT_AREA.innerHTML = '';
         document.querySelector(".column").appendChild(CONTENT_AREA);
     }
+
     function removeDetailedPostFromDom(id) {
         var post = document.getElementById(id.toString());
         if (post) {
@@ -675,11 +413,13 @@ var postLoader = (function () {
         }
         return temp.content.querySelector('.post').cloneNode(true);
     }
+
     function loadPosts(articles) {
         return articles.map(function (article) {
             return loadPost(article);
         });
     }
+
     function loadUserElements(user) {
         var addPostButton = document.querySelector(".header-row").querySelector(".add-button");
         var addPostButtonTemplate = document.querySelector("#add-button").cloneNode(true);
@@ -703,8 +443,9 @@ var postLoader = (function () {
         document.querySelector(".column").removeChild(CONTENT_AREA);
 
         removePostsFromDom();
-        renderPosts(0, articleModel.getArticlesSize(),filterConfig);
+        renderPosts(0, articleModel.getArticlesSize(), filterConfig);
     }
+
     function searchResult() {
         var title = document.querySelector(".header-search-input").value || null;
         var filterConfig = new FilterConfig(title);
@@ -712,7 +453,7 @@ var postLoader = (function () {
     }
 
     function applyFilter() {
-        var title,date = null,author,tags;
+        var title, date = null, author, tags;
         title = document.querySelector(".filter-input-title").value || null;
         author = document.querySelector(".filter-input-author").value || null;
         tags = document.querySelector(".filter-input-tags").value.split(",");
@@ -722,9 +463,10 @@ var postLoader = (function () {
         if (document.querySelector(".filter-button-date").textContent !== 'Дата') {
             date = document.querySelector(".filter-button-date").textContent;
         }
-        var filterConfig = new FilterConfig(title,date,author,tags);
+        var filterConfig = new FilterConfig(title, date, author, tags);
         returnToMain(filterConfig);
     }
+
     function checkAuthInput() {
         var inputUser = document.querySelector(".login-input").value;
         var inputPass = document.querySelector(".pass-input").value;
@@ -735,6 +477,7 @@ var postLoader = (function () {
             insertError("Неправильный пользователь");
         }
     }
+
     function checkLogin(log, pass) {
         if (log === 'admin' && pass === 'admin') {
             user = 'admin';
@@ -746,6 +489,7 @@ var postLoader = (function () {
         }
         return false;
     }
+
     function editPostInDom(id, article) {
         var articleId = document.querySelector('.edit-post-id').innerHTML;
         articleId = articleId.substr(3, articleId.length);
@@ -761,7 +505,7 @@ var postLoader = (function () {
         };
 
         console.log(articleId);
-        if(articleModel.getArticle(articleId)){
+        if (articleModel.getArticle(articleId)) {
             if (articleModel.editArticle(parseInt(articleId), newArticle)) {
                 document.querySelector('.edit-enter').textContent = "Изменено успешно!";
                 document.querySelector('.edit-enter').style.background = "#5188E8";
@@ -769,8 +513,8 @@ var postLoader = (function () {
             } else {
                 alert("Измененный пост не проходит модерацию на проверку!");
             }
-        }else{
-            if(articleModel.addArticle(newArticle)){
+        } else {
+            if (articleModel.addArticle(newArticle)) {
                 document.querySelector('.edit-enter').textContent = "Добавлено успешно!";
                 document.querySelector('.edit-enter').style.background = "#5188E8";
                 setTimeout(postLoader.returnToMain, 2000);
@@ -822,6 +566,7 @@ var postLoader = (function () {
             document.querySelector('.edit-enter').addEventListener('click', editPostInDom);
         });
     }
+
     function insertError(errCode) {
         var removedContent = document.querySelector(".content").cloneNode(true);
         removedContent.className = 'removed-content';
@@ -837,6 +582,7 @@ var postLoader = (function () {
             document.querySelector('.error-window').addEventListener('click', returnToMain);
         });
     }
+
     function insertFilter() {
         if (!CONTENT_AREA.contains(document.querySelector(".filter"))) {
             var temp = FILTER_TEMPLATE;
@@ -844,6 +590,7 @@ var postLoader = (function () {
             document.querySelector('.filter-button-apply').addEventListener('click', applyFilter);
         }
     }
+
     function insertLogin() {
         var temp = LOGIN_TEMPLATE;
         if (!CONTENT_AREA.contains(document.querySelector(".login-window"))) {
@@ -865,6 +612,7 @@ var postLoader = (function () {
             CONTENT_AREA.style.paddingTop = timePassed * 2 + 'px';
         }
     }
+
     function insertDetailedInDOM(article) {
         // fix --> авториз = !авториз
         if (CONTENT_AREA.contains(document.getElementById(article.id))) {
@@ -926,7 +674,7 @@ var postLoader = (function () {
         insertEditInDom: insertEditPost,
         insertDetailedPostInDom: insertDetailedInDOM,
         editPostInDom: editPostInDom,
-        searchResult:searchResult,
+        searchResult: searchResult,
         returnToMain: returnToMain
     };
 }());
@@ -956,7 +704,7 @@ var pagination = (function () {
 
     function handleShowMoreClick() {
         var postsShown = nextPage();
-        showMoreCallback(postsShown.skip, postsShown.top,filterConfig);
+        showMoreCallback(postsShown.skip, postsShown.top, filterConfig);
         console.log(ITEMS_SHOWN);
     }
 
@@ -968,11 +716,11 @@ var pagination = (function () {
     }
 
     function getParams() {
-           return {
-               top: ITEMS_SHOWN,
-               skip: 0,
-               filterConfig: filterConfig
-           };
+        return {
+            top: ITEMS_SHOWN,
+            skip: 0,
+            filterConfig: filterConfig
+        };
     }
 
     function showOrHideMoreButton() {
@@ -1064,10 +812,10 @@ addEventListeners();
 function startApp() {
 
     postLoader.init();
-    pagination.init(articleModel.getArticlesSize(),function (skip, top,filterConfig) {
-        renderPosts(skip, top,filterConfig);
+    pagination.init(articleModel.getArticlesSize(), function (skip, top, filterConfig) {
+        renderPosts(skip, top, filterConfig);
     });
-    renderPosts(pagination.skip,pagination.top);
+    renderPosts(pagination.skip, pagination.top);
     /*
      postLoader.insertPostInDOM({
      id: "21",
@@ -1103,9 +851,9 @@ function startApp() {
      */
 }
 
-function renderPosts(skip, top,filterConfig) {
+function renderPosts(skip, top, filterConfig) {
     postLoader.removePostsFromDom();
-    var posts = articleModel.getArticles(skip, top,filterConfig);
+    var posts = articleModel.getArticles(skip, top, filterConfig);
     postLoader.insertPostsInDOM(posts);
 }
 
