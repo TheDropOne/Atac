@@ -173,6 +173,7 @@ var articleModel = (function () {
         const articleCopy = clone(currentArticle);
         let isEdited = true;
         removeArticle(currentArticle.id);
+        console.log("article removed in editArticle");
         Object.keys(article).forEach((key) => {
             if (Object.prototype.hasOwnProperty.call(articleCopy, key)) {
                 articleCopy[key] = article[key];
@@ -181,9 +182,11 @@ var articleModel = (function () {
         if (!validateArticle(articleCopy)) {
             isEdited = false;
             requestHandler.addArticle(currentArticle);
+            console.log("article added in editArticle");
         } else {
             articleCopy.id = articleCopy.id.toString();
             requestHandler.addArticle(articleCopy);
+            console.log("article added in editArticle");
         }
         articles = requestHandler.getArticles();
         alert(isEdited);
@@ -264,6 +267,15 @@ var articleModel = (function () {
     function getArticlesSize() {
         return articles.length;
     }
+    function getMaxId() {
+        var maxId = 0;
+        for (var i = 0; i < articles.length; i++) {
+            if(parseInt(articles[i].id) > maxId){
+                maxId = parseInt(articles[i].id);
+            }
+        }
+        return maxId;
+    }
 
 
 // here localstorage used to be, but I removed it.
@@ -278,7 +290,8 @@ var articleModel = (function () {
         addTag: addTag,
         removeTag: removeTag,
         logArray: logArray,
-        getArticlesSize: getArticlesSize
+        getArticlesSize: getArticlesSize,
+        getMaxId: getMaxId
     };
 }());
 var postLoader = (function () {
@@ -548,12 +561,12 @@ var postLoader = (function () {
                 renderedArticle.content.querySelector(".edit-enter").textContent = "Изменить";
             } else {
                 console.log(articleModel.getArticlesSize());
-                renderedArticle.content.querySelector(".edit-post").id = articleModel.getArticlesSize() + 1;
+                renderedArticle.content.querySelector(".edit-post").id = articleModel.getMaxId() + 1;
                 renderedArticle.content.querySelector(".edit-post-title").value = '';
                 renderedArticle.content.querySelector(".edit-post-tags").value = '';
                 renderedArticle.content.querySelector(".edit-image-cropper").lastElementChild.src = "images/userlogo.png";
 
-                renderedArticle.content.querySelector(".edit-post-id").textContent = 'ID-' + (articleModel.getArticlesSize() + 1);
+                renderedArticle.content.querySelector(".edit-post-id").textContent = 'ID-' + (articleModel.getMaxId() + 1);
                 renderedArticle.content.querySelector(".edit-post-author").textContent = user;
                 renderedArticle.content.querySelector(".edit-post-date").textContent = formatDate(new Date());
 
