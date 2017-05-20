@@ -1,13 +1,26 @@
 {
-  "name": "ATAC",
-  "version": "1.7",
+  "name": "atac",
+  "version": "1.7.0",
+  "description": "Atac - A tacka-to ne prostaya",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "BRAMA",
-  "license": "MIT license",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TheDropOne/Atac.git"
+  },
+  "keywords": [
+    "brama",
+    "atac"
+  ],
+  "author": "Brama CEO",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/TheDropOne/Atac/issues"
+  },
+  "homepage": "https://github.com/TheDropOne/Atac#readme",
   "dependencies": {
-    "express": "^4.15.2"
+    "express": "^4.15.3"
   }
 }
