@@ -4,6 +4,7 @@
 
 /* global XMLHttpRequest reject*/
 
+
 const requestHandler = (function get() {
   const request = new XMLHttpRequest();
 
@@ -29,35 +30,80 @@ const requestHandler = (function get() {
     request.send(JSON.stringify(article));
   }
 
-  function getArticle(id) {
+  function getArticle(id, sync) {
+    if (sync) {
+      return new Promise((resolve, reject) => {
+        request.open('GET', `/article/${id}`, true);
+        request.setRequestHeader('content-type', 'application/json');
+        request.send();
+
+        request.onload = function load() {
+          if (this.status === 200) {
+            if (request.responseText) {
+              const article = JSON.parse(request.responseText);
+              article.createdAt = new Date(article.createdAt);
+              resolve(article);
+            }
+          } else {
+            const error = new Error(this.statusText);
+            error.code = this.status;
+            reject(error);
+          }
+        };
+        request.onerror = function error() {
+          reject(new Error('Get Article request error'));
+        };
+      });
+    }
     request.open('GET', `/article/${id}`, false);
     request.setRequestHeader('content-type', 'application/json');
     request.send();
-
     if (request.responseText) {
       const article = JSON.parse(request.responseText);
       article.createdAt = new Date(article.createdAt);
+      console.log(article.author);
       return article;
     }
-    return null;
   }
 
   function addArticle(article) {
-    request.open('POST', '/article', false);
-    request.setRequestHeader('content-type', 'application/json');
-    request.onerror = function () {
-      reject(new Error('Error'));
-    };
-    request.send(JSON.stringify(article));
+    return new Promise((resolve, reject) => {
+      request.open('POST', '/article', false);
+      request.setRequestHeader('content-type', 'application/json');
+      request.send(JSON.stringify(article));
+      request.onload = function load() {
+        if (this.status === 200) {
+          resolve();
+        } else {
+          const error = new Error(this.statusText);
+          error.code = this.status;
+          reject(error);
+        }
+      };
+      request.onerror = function () {
+        reject(new Error('Add Article request error'));
+      };
+    });
   }
 
   function deleteArticle(id) {
-    request.open('DELETE', `/articles/${id}`, false);
-    request.setRequestHeader('content-type', 'application/json');
-    request.onerror = function () {
-      reject(new Error('Error'));
-    };
-    request.send();
+    return new Promise((resolve, reject) => {
+      request.open('DELETE', `/articles/${id}`, false);
+      request.setRequestHeader('content-type', 'application/json');
+      request.send();
+      request.onload = function load() {
+        if (this.status === 200) {
+          resolve();
+        } else {
+          const error = new Error(this.statusText);
+          error.code = this.status;
+          reject(error);
+        }
+      };
+      request.onerror = function () {
+        reject(new Error('Delete Article request error'));
+      };
+    });
   }
 
   return {

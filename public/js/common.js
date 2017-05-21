@@ -1,78 +1,82 @@
-/* global document requestHandler  event alert*/
+/* global document requestHandler  event*/
 /* eslint no-underscore-dangle: "error"*/
 
 let user;
 class FilterConfig {
   constructor(byName, byDate, byAuthor, byTags) {
-    this._byName = byName;
-    this._byDate = byDate;
-    this._byAuthor = byAuthor;
-    this._byTags = byTags;
+    this.byName = byName;
+    this.byDate = byDate;
+    this.byAuthor = byAuthor;
+    this.byTags = byTags;
   }
 
-  byName() {
-    return this._byName;
+  getByName() {
+    return this.byName;
   }
 
-  byDate() {
-    return this._byDate;
+  getByDate() {
+    return this.byDate;
   }
 
-  byAuthor() {
-    return this._byAuthor;
+  getByAuthor() {
+    return this.byAuthor;
   }
 
-  byTags() {
-    return this._byTags;
+  getByTags() {
+    return this.byTags;
   }
 }
 const articleModel = (function () {
   const tags = ['MWC 2017', 'Гаджеты', 'Смартфоны', 'Выставки', 'Дизайн'];
-  let articles = requestHandler.getArticles().slice();
+  let articles = requestHandler.getArticles();
 
   function clone(obj) {
     if (!obj || typeof obj !== 'object') {
       return obj;
     }
     const copy = obj.constructor();
-    for (const attr in obj) {
-      if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
-    }
+    Object.keys(obj).forEach((attr) => {
+      if (Object.prototype.hasOwnProperty.call(obj, attr)) copy[attr] = obj[attr];
+    });
     return copy;
   }
 
   function getArticle(id) {
-    return requestHandler.getArticle(id);
+    requestHandler.getArticle(id, true).then(result => result);
   }
 
   function getArticlesByFilter(filterConfig) {
-    const filteredArray = [];
-    for (let i = 0; i < articles.length; i++) {
-      if (filterConfig.byName()) {
-        if (articles[i].title.indexOf(filterConfig.byName()) !== -1) {
-          filteredArray.push(articles[i]);
-        }
-      }
-      if (filterConfig.byDate()) {
-        if (articles[i].createdAt - filterConfig.byDate() < 100000) {
-          filteredArray.push(articles[i]);
-        }
-      }
-      if (filterConfig.byAuthor()) {
-        if (articles[i].author === filterConfig.byAuthor()) {
-          filteredArray.push(articles[i]);
-        }
-      }
-      if (filterConfig.byTags()) {
-        for (let j = 0; j < filterConfig.byTags().length; j++) {
-          if (articles[i].tags.indexOf(filterConfig.byTags()[j]) !== -1) {
+    if (filterConfig.byName) {
+      const filteredArray = [];
+      for (let i = 0; i < articles.length; i++) {
+        if (filterConfig.getByName()) {
+          if (articles[i].title.indexOf(filterConfig.getByName()) !== -1) {
             filteredArray.push(articles[i]);
           }
         }
+        if (filterConfig.getByDate()) {
+          if (articles[i].createdAt - filterConfig.getByDate() < 100000) {
+            filteredArray.push(articles[i]);
+          }
+        }
+        if (filterConfig.getByAuthor()) {
+          if (articles[i].author === filterConfig.getByAuthor()) {
+            filteredArray.push(articles[i]);
+          }
+        }
+        if (filterConfig.getByTags()) {
+          for (let j = 0; j < filterConfig.getByTags().length; j++) {
+            if (articles[i].tags.indexOf(filterConfig.getByTags()[j]) !== -1) {
+              filteredArray.push(articles[i]);
+            }
+          }
+        }
       }
+      return filteredArray;
     }
-    return filteredArray;
+    return articles;
   }
+
   function getArticles(skip, top, filterConfig) {
     let approvedArticles = [];
     if (filterConfig) {
@@ -85,7 +89,9 @@ const articleModel = (function () {
     if (articles.length < top) {
       top = articles.length;
     }
-    approvedArticles.sort((a, b) => a.createdAt > b.createdAt ? 1 : -1);
+    approvedArticles.sort((a, b) => {
+      return a.createdAt > b.createdAt ? 1 : -1;
+    });
     return approvedArticles.slice(skip, skip + top);
   }
 
@@ -166,39 +172,36 @@ const articleModel = (function () {
   }
 
   function removeArticle(id) {
-    const articleToDelete = requestHandler.getArticle(id);
-    if (!articleToDelete) {
-      return false;
-    }
-
-    requestHandler.deleteArticle(id);
-    articles = requestHandler.getArticles().slice();
-    console.log('Post successfully removed');
-    return true;
+    requestHandler.deleteArticle(id).then(() => {
+      articles = requestHandler.getArticles();
+    });
   }
 
   function editArticle(id, article) {
-    const currentArticle = getArticle(id);
+    const currentArticle = requestHandler.getArticle(id, false);
     const articleCopy = clone(currentArticle);
     let isEdited = true;
-    removeArticle(currentArticle.id);
-    console.log('article removed in editArticle');
-    Object.keys(article).forEach((key) => {
-      if (Object.prototype.hasOwnProperty.call(articleCopy, key)) {
-        articleCopy[key] = article[key];
+    requestHandler.deleteArticle(currentArticle.id).then(() => {
+      articles = requestHandler.getArticles();
+      console.log('article removed in editArticle');
+      Object.keys(article).forEach((key) => {
+        if (Object.prototype.hasOwnProperty.call(articleCopy, key)) {
+          articleCopy[key] = article[key];
+        }
+      });
+      if (!validateArticle(articleCopy)) {
+        isEdited = false;
+        requestHandler.addArticle(currentArticle);
+        console.log('article added in editArticle');
+      } else {
+        articleCopy.id = articleCopy.id.toString();
+        isEdited = true;
+        requestHandler.addArticle(articleCopy);
+        console.log('article added in editArticle');
       }
+      articles = requestHandler.getArticles();
+      return isEdited;
     });
-    if (!validateArticle(articleCopy)) {
-      isEdited = false;
-      requestHandler.addArticle(currentArticle);
-      console.log('article added in editArticle');
-    } else {
-      articleCopy.id = articleCopy.id.toString();
-      requestHandler.addArticle(articleCopy);
-      console.log('article added in editArticle');
-    }
-    articles = requestHandler.getArticles();
-    return isEdited;
   }
 
 
@@ -516,14 +519,11 @@ const postLoader = (function () {
     };
 
     console.log(articleId);
-    if (articleModel.getArticle(articleId)) {
-      if (articleModel.editArticle(parseInt(articleId, 10), newArticle)) {
-        document.querySelector('.edit-enter').textContent = 'Изменено успешно!';
-        document.querySelector('.edit-enter').style.background = '#5188E8';
-        setTimeout(postLoader.returnToMain, 2000);
-      } else {
-        alert('Измененный пост не проходит модерацию на проверку!');
-      }
+    if (requestHandler.getArticle(articleId, false)) {
+      articleModel.editArticle(parseInt(articleId, 10), newArticle);
+      document.querySelector('.edit-enter').textContent = 'Изменено';
+      document.querySelector('.edit-enter').style.background = '#5188E8';
+      setTimeout(postLoader.returnToMain, 2000);
     } else if (articleModel.addArticle(newArticle)) {
       document.querySelector('.edit-enter').textContent = 'Добавлено успешно!';
       document.querySelector('.edit-enter').style.background = '#5188E8';
@@ -703,10 +703,9 @@ const pagination = (function () {
     console.log(ITEMS_SHOWN);
   }
 
-  function init(_total, _showMoreCallback, _filterConfig) {
+  function init(_total, _showMoreCallback) {
     total = _total;
     showMoreCallback = _showMoreCallback;
-    _filterConfig = filterConfig;
     showMoreButton = document.querySelector('.more-button');
     showMoreButton.addEventListener('click', handleShowMoreClick);
 
@@ -770,7 +769,9 @@ function eventPost(event) {
         currentEvent = currentEvent.parentElement;
       }
       articleToInsertNumber = parseInt(currentEvent.getAttribute('id'), 10);
-      postLoader.insertEditInDom(articleModel.getArticle(articleToInsertNumber));
+      requestHandler.getArticle(articleToInsertNumber, true).then((result) => {
+        postLoader.insertEditInDom(result);
+      });
       // fix --> Добавить изменение поста
       // fix --> Добавить анимацию удаления всех
       break;
@@ -786,7 +787,9 @@ function eventPost(event) {
         currentEvent = currentEvent.parentElement;
       }
       articleToInsertNumber = parseInt(currentEvent.getAttribute('id'), 10);
-      postLoader.insertDetailedPostInDom(articleModel.getArticle(articleToInsertNumber));
+      requestHandler.getArticle(articleToInsertNumber, true).then((result) => {
+        postLoader.insertDetailedPostInDom(result);
+      });
       break;
     default:
       break;
