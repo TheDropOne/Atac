@@ -1,7 +1,7 @@
-/* global document requestHandler  event*/
+/* global document requestHandler usersController  event*/
 /* eslint no-underscore-dangle: "error"*/
 
-let user;
+let currentUser;
 class FilterConfig {
   constructor(byName, byDate, byAuthor, byTags) {
     this.byName = byName;
@@ -301,7 +301,7 @@ const postLoader = (function () {
 
 
     const controlButtons = temp.content.querySelector('.control-buttons');
-    if (!user) {
+    if (!currentUser) {
       if (controlButtons) {
         temp.content.querySelector('.post').removeChild(controlButtons);
       }
@@ -337,7 +337,7 @@ const postLoader = (function () {
 
   function insertPostsInDOM(articles) {
     // Пользователь
-    loadUserElements(user);
+    loadUserElements(currentUser);
 
     /* для массива объектов статей получим соотвествующие HTML элементы */
     const postsNodes = loadPosts(articles);
@@ -464,18 +464,6 @@ const postLoader = (function () {
     returnToMain(filterConfig);
   }
 
-  function checkLogin(log, pass) {
-    if (log === 'admin' && pass === 'admin') {
-      user = 'admin';
-      return true;
-    }
-    if (log === 'Brama' && pass === 'Brama') {
-      user = 'Brama';
-      return true;
-    }
-    return false;
-  }
-
   function insertError(errCode) {
     const removedContent = document.querySelector('.content').cloneNode(true);
     removedContent.className = 'removed-content';
@@ -497,11 +485,15 @@ const postLoader = (function () {
     const inputUser = document.querySelector('.login-input').value;
     const inputPass = document.querySelector('.pass-input').value;
 
-    if (checkLogin(inputUser, inputPass)) {
-      returnToMain();
-    } else {
-      insertError('Неправильный пользователь');
-    }
+    if (usersController.logIn({ username: inputUser, password: inputPass })
+        .then((user) => {
+          currentUser = user;
+          returnToMain();
+        })
+        .catch(() => {
+          usersController.logOut();
+          insertError('Неправильный пользователь');
+        }));
   }
 
   function editPostInDom() {
@@ -563,7 +555,7 @@ const postLoader = (function () {
         renderedArticle.content.querySelector('.edit-image-cropper').lastElementChild.src = 'images/userlogo.png';
 
         renderedArticle.content.querySelector('.edit-post-id').textContent = `ID-${articleModel.getMaxId() + 1}`;
-        renderedArticle.content.querySelector('.edit-post-author').textContent = user;
+        renderedArticle.content.querySelector('.edit-post-author').textContent = currentUser;
         renderedArticle.content.querySelector('.edit-post-date').textContent = formatDate(new Date());
 
         renderedArticle.content.querySelector('.edit-post-short-description').textContent = '';
@@ -622,7 +614,7 @@ const postLoader = (function () {
       temp.content.querySelector('.detailed-post-tags').innerHTML = article.tags;
 
       // если нет юзера - удаляем
-      if (!user) {
+      if (!currentUser) {
         const controlButtons = temp.content.querySelector('.detailed-control-buttons');
         const addPostButton = document.querySelector('.add-button');
         if (controlButtons && addPostButton) {
