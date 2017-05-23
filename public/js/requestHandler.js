@@ -13,6 +13,7 @@ const requestHandler = (function get() {
     request.setRequestHeader('content-type', 'application/json');
     request.send();
 
+    console.log(request.responseText);
     const articles = JSON.parse(request.responseText);
     articles.forEach((currentArticle) => {
       currentArticle.createdAt = new Date(currentArticle.createdAt);
