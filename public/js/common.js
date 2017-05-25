@@ -156,6 +156,7 @@ const articleModel = (function () {
         return false;
       }
       if (!validateArticle(article)) {
+        alert('Модерация не пройдена');
         console.log('Article not validated');
         return false;
       }
@@ -183,7 +184,6 @@ const articleModel = (function () {
     let isEdited = true;
     requestHandler.deleteArticle(currentArticle.id).then(() => {
       articles = requestHandler.getArticles();
-      console.log('article removed in editArticle');
       Object.keys(article).forEach((key) => {
         if (Object.prototype.hasOwnProperty.call(articleCopy, key)) {
           articleCopy[key] = article[key];
@@ -192,12 +192,10 @@ const articleModel = (function () {
       if (!validateArticle(articleCopy)) {
         isEdited = false;
         requestHandler.addArticle(currentArticle);
-        console.log('article added in editArticle');
       } else {
         articleCopy.id = articleCopy.id.toString();
         isEdited = true;
         requestHandler.addArticle(articleCopy);
-        console.log('article added in editArticle');
       }
       articles = requestHandler.getArticles();
       return isEdited;
@@ -510,7 +508,6 @@ const postLoader = (function () {
       imageSrc: document.querySelector('.edit-image-cropper').lastElementChild.src,
     };
 
-    console.log(articleId);
     if (requestHandler.getArticle(articleId, false)) {
       articleModel.editArticle(parseInt(articleId, 10), newArticle);
       document.querySelector('.edit-enter').textContent = 'Изменено';
@@ -548,14 +545,13 @@ const postLoader = (function () {
         renderedArticle.content.querySelector('.edit-post-description').textContent = article.content;
         renderedArticle.content.querySelector('.edit-enter').textContent = 'Изменить';
       } else {
-        console.log(articleModel.getArticlesSize());
         renderedArticle.content.querySelector('.edit-post').id = articleModel.getMaxId() + 1;
         renderedArticle.content.querySelector('.edit-post-title').value = '';
         renderedArticle.content.querySelector('.edit-post-tags').value = '';
         renderedArticle.content.querySelector('.edit-image-cropper').lastElementChild.src = 'images/userlogo.png';
 
         renderedArticle.content.querySelector('.edit-post-id').textContent = `ID-${articleModel.getMaxId() + 1}`;
-        renderedArticle.content.querySelector('.edit-post-author').textContent = currentUser;
+        renderedArticle.content.querySelector('.edit-post-author').textContent = currentUser.username;
         renderedArticle.content.querySelector('.edit-post-date').textContent = formatDate(new Date());
 
         renderedArticle.content.querySelector('.edit-post-short-description').textContent = '';
@@ -621,7 +617,6 @@ const postLoader = (function () {
           temp.content.querySelector('.detailed-post').removeChild(controlButtons);
           document.querySelector('.header-row').removeChild(addPostButton);
         }
-        console.log('deleted');
       }
       const ANIMATION_TIME = 300;
       const start = Date.now();
@@ -692,7 +687,6 @@ const pagination = (function () {
   function handleShowMoreClick() {
     const postsShown = nextPage();
     showMoreCallback(postsShown.skip, postsShown.top, filterConfig);
-    console.log(ITEMS_SHOWN);
   }
 
   function init(_total, _showMoreCallback) {

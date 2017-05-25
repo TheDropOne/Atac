@@ -31,11 +31,11 @@ app.use(passport.session());
 const articlesModel = new mongoose.Schema({
   title: String,
   summary: String,
-  createdAt: Date,
+  createdAt: String,
   author: String,
   content: String,
   img: String,
-});
+}, { collection: 'articles' });
 const usersModel = new mongoose.Schema({
   username: String,
   password: String,
@@ -43,8 +43,9 @@ const usersModel = new mongoose.Schema({
 const articles = mongoDatabase.model('articles', articlesModel);
 const users = mongoDatabase.model('users', usersModel);
 
-mongoDatabase.on('error', error => console.log('Connection to database was failed, because: ', error.message));
+mongoDatabase.on('error', error => console.log('Монга не прикручена, все нормально. Connection to database failed, because: ', error.message));
 mongoDatabase.once('open', () => console.log('Successfully connected to database.'));
+
 
 passport.serializeUser((user, done) => done(null, user));
 passport.deserializeUser((user, done) => done(user ? null : new Error('deserialize'), user));
@@ -54,7 +55,7 @@ passport.use(
   new LocalStrategy(
     { passReqToCallback: true },
     (rqst, username, password, done) => {
-      const user = users.findOne({ username });
+      const user = diskDatabase.users.findOne({ username });
       if (!user) {
         console.log('This currentUser doesn\'t exists');
         return done(null, false, {
@@ -72,7 +73,7 @@ passport.use(
         message: 'Successfull authorization',
       });
     }));
-app.post('/login', passport.authenticate('login'), (req, res) => res.send(res.user));
+app.post('/login', passport.authenticate('login'), (req, res) => res.send(req.user));
 app.get('/logout', (req, res) => {
   req.logout();
   res.sendStatus(200);
@@ -80,30 +81,24 @@ app.get('/logout', (req, res) => {
 
 
 app.get('/articles', (req, res) => {
-  articles.find((err, docs) => {
-    if (err) {
-      console.log(err);
-      return res.sendStatus(500);
-    }
-    res.json(docs);
-  });
+  res.json(diskDatabase.articles.find());
 });
 
 
 app.get('/article/:id', (req, res) => {
-  res.json(articles.findOne({ id: req.params.id }));
+  res.json(diskDatabase.articles.findOne({ id: req.params.id }));
 });
 
 app.post('/article', (req, res) => {
-  res.json(articles.save(req.body));
+  res.json(diskDatabase.articles.save(req.body));
 });
 
 app.delete('/articles/:id', (req, res) => {
-  res.json(articles.remove({ id: req.params.id }));
+  res.json(diskDatabase.articles.remove({ id: req.params.id }));
 });
 
 app.put('/articles/', (req, res) => {
-  res.json(articles.update({ id: req.body.id }, req.body));
+  res.json(diskDatabase.articles.update({ id: req.body.id }, req.body));
 });
 
 
